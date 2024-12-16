@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - NhàSinhViên</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="register-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/auth.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="index.html">NhàSinhViên</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="search.html">Tìm phòng</a></li>
+                <li><a href="post.html">Đăng tin</a></li>
+                <li><a href="contact.html">Liên hệ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="register-container">
+        <div class="register-box">
+            <div class="register-header">
+                <h1>Đăng ký tài khoản</h1>
+                <p>Tạo tài khoản để trải nghiệm đầy đủ tính năng</p>
+            </div>
+
+            <form id="registerForm" class="register-form">
+                <div class="form-group">
+                    <label for="name">Họ và tên *</label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="name" name="name" required
+                               minlength="2" maxlength="50"
+                               pattern="[A-Za-zÀ-ỹ\s]+"
+                               title="Họ tên chỉ được chứa chữ cái và khoảng trắng">
+                        <span class="error-message"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" required
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                               title="Vui lòng nhập email hợp lệ">
+                        <span class="error-message"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Số điện thoại *</label>
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="phone" name="phone" required
+                               pattern="[0-9]{10}"
+                               title="Số điện thoại phải có 10 chữ số">
+                        <span class="error-message"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mật khẩu *</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" required
+                               minlength="6"
+                               pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$"
+                               title="Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ và số">
+                        <i class="fas fa-eye-slash toggle-password"></i>
+                        <span class="error-message"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Xác nhận mật khẩu *</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <i class="fas fa-eye-slash toggle-password"></i>
+                        <span class="error-message"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Vai trò *</label>
+                    <div class="role-options">
+                        <label class="role-option">
+                            <input type="radio" name="role" value="user" checked>
+                            <div class="role-card">
+                                <i class="fas fa-user"></i>
+                                <span>Người thuê</span>
+                            </div>
+                        </label>
+                        <label class="role-option">
+                            <input type="radio" name="role" value="owner">
+                            <div class="role-card">
+                                <i class="fas fa-home"></i>
+                                <span>Chủ nhà</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group terms">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="terms" required>
+                        <span>Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a></span>
+                    </label>
+                    <span class="error-message"></span>
+                </div>
+
+                <div class="error-message" id="formError"></div>
+
+                <button type="submit" class="register-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Đăng ký
+                </button>
+            </form>
+
+            <div class="login-link">
+                Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Xử lý hiển thị/ẩn mật khẩu
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
+
+        // Validation form
+        const form = document.getElementById('registerForm');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const formError = document.getElementById('formError');
+
+        // Hiển thị lỗi cho từng trường
+        function showError(input, message) {
+            const errorElement = input.parentElement.querySelector('.error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            input.classList.add('error');
+        }
+
+        // Xóa thông báo lỗi
+        function clearError(input) {
+            const errorElement = input.parentElement.querySelector('.error-message');
+            errorElement.textContent = '';
+            errorElement.style.display = 'none';
+            input.classList.remove('error');
+        }
+
+        // Kiểm tra mật khẩu và xác nhận mật khẩu
+        function validatePasswords() {
+            clearError(password);
+            clearError(confirmPassword);
+
+            const passwordValue = password.value;
+            const confirmValue = confirmPassword.value;
+
+            if (!passwordValue.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)) {
+                showError(password, 'Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ và số');
+                return false;
+            }
+
+            if (confirmValue && passwordValue !== confirmValue) {
+                showError(confirmPassword, 'Mật khẩu xác nhận không khớp');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Kiểm tra các trường khi nhập
+        form.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                clearError(this);
+                formError.style.display = 'none';
+
+                // Kiểm tra match mật khẩu khi nhập
+                if (this === password || this === confirmPassword) {
+                    validatePasswords();
+                }
+            });
+        });
+
+        // Xử lý đăng ký
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let isValid = true;
+
+            // Validate họ tên
+            const name = document.getElementById('name');
+            if (!name.value.match(/^[A-Za-zÀ-ỹ\s]{2,50}$/)) {
+                showError(name, 'Họ tên không hợp lệ');
+                isValid = false;
+            }
+
+            // Validate email
+            const email = document.getElementById('email');
+            if (!email.value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+                showError(email, 'Email không hợp lệ');
+                isValid = false;
+            }
+
+            // Validate số điện thoại
+            const phone = document.getElementById('phone');
+            if (!phone.value.match(/^[0-9]{10}$/)) {
+                showError(phone, 'Số điện thoại không hợp lệ');
+                isValid = false;
+            }
+
+            // Validate mật khẩu và xác nhận mật khẩu
+            if (!validatePasswords()) {
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            const submitBtn = document.querySelector('.register-btn');
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+                const formData = new FormData(form);
+                const userData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    password: formData.get('password'),
+                    role: formData.get('role')
+                };
+
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Lưu token và thông tin user
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    
+                    // Chuyển hướng dựa vào role
+                    if (data.data.user.role === 'owner') {
+                        window.location.href = '/post.html';
+                    } else {
+                        window.location.href = '/index.html';
+                    }
+                } else {
+                    formError.textContent = data.message || 'Có lỗi xảy ra khi đăng ký';
+                    formError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+                formError.textContent = 'Có lỗi xảy ra, vui lòng thử lại sau';
+                formError.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Đăng ký';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng tin - NhàSinhViên</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        #map { 
+            height: 400px; 
+            width: 100%;
+            border-radius: 8px;
+        }
+    </style>
+    <script src="js/auth.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="index.html">NhàSinhViên</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="search.html">Tìm phòng</a></li>
+                <li><a href="post.html" class="active">Đăng tin</a></li>
+                <li><a href="contact.html">Liên hệ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="post-container">
+        <div class="post-form-wrapper">
+            <h1>Đăng tin cho thuê</h1>
+            <p class="form-description">Vui lòng điền đầy đủ thông tin để đăng tin</p>
+
+            <form id="postForm" class="post-form">
+                <!-- Thông tin cơ bản -->
+                <div class="form-section">
+                    <h2>Thông tin cơ bản</h2>
+                    <div class="form-group">
+                        <label for="name">Tiêu đề bài đăng *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chỉ chi tiết *</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                    <!-- Location Map -->
+                    <div class="form-group">
+                        <label class="form-label">Chọn vị trí trên bản đồ *</label>
+                        <div id="map" style="height: 400px;" class="rounded border mb-2"></div>
+                        <input type="hidden" id="latitude" name="latitude" required>
+                        <input type="hidden" id="longitude" name="longitude" required>
+                        <small class="text-muted">Click vào bản đồ để chọn vị trí chính xác của phòng trọ</small>
+                    </div>
+                </div>
+
+                <!-- Thông tin chi tiết -->
+                <div class="form-section">
+                    <h2>Thông tin chi tiết</h2>
+                    <div class="form-group">
+                        <label for="description">Mô tả chi tiết *</label>
+                        <textarea id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactPhone">Số điện thoại liên hệ *</label>
+                            <input type="tel" id="contactPhone" name="contactPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="closeTime">Giờ đóng cửa</label>
+                            <input type="time" id="closeTime" name="closeTime">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tiện ích -->
+                <div class="form-section">
+                    <h2>Tiện ích</h2>
+                    <div class="form-group">
+                        <label>Phương tiện di chuyển được phép</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="acceptableVehicles" value="xe_may">
+                                Xe máy
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="acceptableVehicles" value="xe_dap">
+                                Xe đạp
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="acceptableVehicles" value="o_to">
+                                Ô tô
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nội thất có sẵn</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="inventory" value="giuong">
+                                Giường
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="inventory" value="tu">
+                                Tủ
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="inventory" value="ban_ghe">
+                                Bàn ghế
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="inventory" value="dieu_hoa">
+                                Điều hòa
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="numBedrooms">Số phòng ngủ *</label>
+                            <input type="number" id="numBedrooms" name="numBedrooms" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tiện ích phòng tắm</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="bathroom.hasShower" value="true">
+                                    Vòi sen
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="bathroom.hasBathtub" value="true">
+                                    Bồn tắm
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="bathroom.hasPrivateToilet" value="true">
+                                    Toilet riêng
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chi phí -->
+                <div class="form-section">
+                    <h2>Chi phí & Điều khoản</h2>
+                    <div class="form-group">
+                        <label>Chi phí tiện ích</label>
+                        <div id="utilityCosts">
+                            <div class="utility-cost-item">
+                                <input type="text" name="utilityName[]" placeholder="Tên chi phí">
+                                <input type="number" name="utilityCost[]" placeholder="Giá (VNĐ)">
+                                <button type="button" class="remove-utility"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" id="addUtility" class="add-utility-btn">
+                            <i class="fas fa-plus"></i> Thêm chi phí
+                        </button>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Đặt cọc</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="deposit.required" value="true">
+                                    Yêu cầu đặt cọc
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group deposit-amount" style="display: none;">
+                            <label for="depositAmount">Số tiền đặt cọc (VNĐ)</label>
+                            <input type="number" id="depositAmount" name="deposit.amount">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hình ảnh -->
+                <div class="form-section">
+                    <h2>Hình ảnh</h2>
+                    <div class="form-group">
+                        <label>Tải lên hình ảnh phòng trọ (tối đa 5 ảnh)</label>
+                        <div class="image-upload-container">
+                            <div class="image-upload-wrapper">
+                                <input type="file" id="imageUpload" accept="image/*" multiple>
+                                <div class="upload-placeholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Kéo thả hoặc click để tải ảnh lên</p>
+                                </div>
+                            </div>
+                            <div id="imagePreview" class="image-preview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Đăng tin
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/property.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        // Kiểm tra đăng nhập
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const isAuthenticated = await Auth.checkAuthStatus();
+                if (!isAuthenticated) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                const user = Auth.getUser();
+                if (user.role !== 'owner') {
+                    alert('Bạn không có quyền đăng tin!');
+                    window.location.href = '/index.html';
+                    return;
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = '/login.html';
+            }
+        });
+
+        // Xử lý hiển thị/ẩn số tiền đặt cọc
+        document.querySelector('input[name="deposit.required"]').addEventListener('change', (e) => {
+            const depositAmount = document.querySelector('.deposit-amount');
+            depositAmount.style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        // Xử lý thêm/xóa chi phí tiện ích
+        document.getElementById('addUtility').addEventListener('click', () => {
+            const container = document.getElementById('utilityCosts');
+            const newItem = document.createElement('div');
+            newItem.className = 'utility-cost-item';
+            newItem.innerHTML = `
+                <input type="text" name="utilityName[]" placeholder="Tên chi phí">
+                <input type="number" name="utilityCost[]" placeholder="Giá (VNĐ)">
+                <button type="button" class="remove-utility"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(newItem);
+        });
+
+        document.getElementById('utilityCosts').addEventListener('click', (e) => {
+            if (e.target.closest('.remove-utility')) {
+                e.target.closest('.utility-cost-item').remove();
+            }
+        });
+
+        // Xử lý preview ảnh
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+
+            const files = Array.from(e.target.files);
+            if (files.length > 5) {
+                alert('Chỉ được chọn tối đa 5 ảnh!');
+                this.value = '';
+                return;
+            }
+
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.className = 'preview-item';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview">
+                            <button type="button" class="remove-image"><i class="fas fa-times"></i></button>
+                        `;
+                        preview.appendChild(div);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.getElementById('imagePreview').addEventListener('click', (e) => {
+            if (e.target.closest('.remove-image')) {
+                const previewItem = e.target.closest('.preview-item');
+                previewItem.remove();
+                
+                // Reset file input nếu không còn ảnh preview
+                const preview = document.getElementById('imagePreview');
+                if (preview.children.length === 0) {
+                    document.getElementById('imageUpload').value = '';
+                }
+            }
+        });
+
+        let map;
+        let marker;
+
+        function initMap() {
+            // Vị trí mặc định (TP.HCM)
+            const defaultLocation = [10.762622, 106.660172];
+
+            // Khởi tạo bản đồ
+            map = L.map('map').setView(defaultLocation, 13);
+
+            // Thêm layer OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Thêm control tìm kiếm địa chỉ
+            const geocoder = L.Control.Geocoder.nominatim({
+                geocodingQueryParams: {
+                    countrycodes: 'vn', // Chỉ tìm kiếm ở Việt Nam
+                    viewbox: '102.14,8.18,109.46,23.39', // Giới hạn trong lãnh thổ Việt Nam
+                    bounded: 1,
+                    addressdetails: 1,
+                    limit: 5
+                }
+            });
+
+            const searchControl = L.Control.geocoder({
+                defaultMarkGeocode: false,
+                geocoder: geocoder,
+                placeholder: 'Tìm kiếm địa chỉ...',
+                errorMessage: 'Không tìm thấy địa chỉ'
+            }).on('markgeocode', function(e) {
+                const latlng = e.geocode.center;
+                placeMarker(latlng);
+                map.setView(latlng, 17);
+                
+                // Cập nhật địa chỉ
+                const address = [
+                    e.geocode.properties.address.road,
+                    e.geocode.properties.address.suburb,
+                    e.geocode.properties.address.city || e.geocode.properties.address.town,
+                    'Việt Nam'
+                ].filter(Boolean).join(', ');
+                
+                document.getElementById('address').value = address;
+            }).addTo(map);
+
+            // Xử lý sự kiện click vào map
+            map.on('click', function(e) {
+                placeMarker(e.latlng);
+                reverseGeocode(e.latlng);
+            });
+
+            // Thử lấy vị trí hiện tại của người dùng
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latlng = L.latLng(position.coords.latitude, position.coords.longitude);
+                        map.setView(latlng, 17);
+                        placeMarker(latlng);
+                        reverseGeocode(latlng);
+                    },
+                    () => {
+                        // Nếu không lấy được vị trí, giữ vị trí mặc định
+                        placeMarker(L.latLng(defaultLocation[0], defaultLocation[1]));
+                    }
+                );
+            }
+
+            // Liên kết input địa chỉ với geocoder
+            const addressInput = document.getElementById('address');
+            addressInput.addEventListener('change', function() {
+                const query = this.value;
+                geocoder.geocode(query, function(results) {
+                    if (results && results.length > 0) {
+                        const result = results[0];
+                        const latlng = result.center;
+                        placeMarker(latlng);
+                        map.setView(latlng, 17);
+                    }
+                });
+            });
+        }
+
+        function placeMarker(latlng) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            marker = L.marker(latlng, {
+                draggable: true
+            }).addTo(map);
+
+            // Cập nhật giá trị vào input hidden
+            document.getElementById('latitude').value = latlng.lat;
+            document.getElementById('longitude').value = latlng.lng;
+
+            // Xử lý sự kiện kéo thả marker
+            marker.on('dragend', function(e) {
+                const pos = e.target.getLatLng();
+                document.getElementById('latitude').value = pos.lat;
+                document.getElementById('longitude').value = pos.lng;
+                reverseGeocode(pos);
+            });
+        }
+
+        function reverseGeocode(latlng) {
+            const geocoder = L.Control.Geocoder.nominatim({
+                geocodingQueryParams: {
+                    countrycodes: 'vn',
+                    addressdetails: 1
+                }
+            });
+            
+            geocoder.reverse(latlng, map.getZoom(), function(results) {
+                if (results && results.length > 0) {
+                    const result = results[0];
+                    const address = [
+                        result.properties.address.road,
+                        result.properties.address.suburb,
+                        result.properties.address.city || result.properties.address.town,
+                        'Việt Nam'
+                    ].filter(Boolean).join(', ');
+                    
+                    document.getElementById('address').value = address;
+                }
+            });
+        }
+
+        // Khởi tạo bản đồ khi trang load xong
+        document.addEventListener('DOMContentLoaded', initMap);
+
+        // Thêm event listener cho form submit
+        document.getElementById('postForm').addEventListener('submit', submitForm);
+
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            try {
+                const formData = new FormData(event.target);
+                const images = document.getElementById('imageUpload').files;
+                
+                // Kiểm tra dữ liệu bắt buộc
+                const latitude = parseFloat(document.getElementById('latitude').value);
+                const longitude = parseFloat(document.getElementById('longitude').value);
+                const contactPhone = formData.get('contactPhone');
+
+                if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) {
+                    alert('Vui lòng chọn vị trí trên bản đồ');
+                    return;
+                }
+
+                if (!contactPhone) {
+                    alert('Vui lòng nhập số điện thoại liên hệ');
+                    return;
+                }
+
+                // Upload ảnh lên Cloudinary
+                const imageUrls = [];
+                for (let i = 0; i < images.length; i++) {
+                    const imageData = new FormData();
+                    imageData.append('file', images[i]);
+                    imageData.append('upload_preset', 'xvo2f3vf');
+                    
+                    const response = await fetch('https://api.cloudinary.com/v1_1/dspjslyw6/image/upload', {
+                        method: 'POST',
+                        body: imageData
+                    });
+                    
+                    const data = await response.json();
+                    if (!data.secure_url) {
+                        throw new Error('Lỗi khi tải ảnh lên: ' + data.error?.message || 'Unknown error');
+                    }
+                    imageUrls.push(data.secure_url);
+                }
+                
+                // Lấy danh sách tiện ích
+                const inventory = Array.from(formData.getAll('inventory'));
+                
+                // Lấy thông tin chi phí tiện ích
+                const utilityNames = formData.getAll('utilityName[]');
+                const utilityCosts = formData.getAll('utilityCost[]');
+                const utilityCostsArray = utilityNames.map((name, index) => ({
+                    name: name,
+                    cost: parseInt(utilityCosts[index])
+                })).filter(cost => cost.name && cost.cost);
+
+                // Tạo object dữ liệu để gửi lên server
+                const propertyData = {
+                    name: formData.get('name'),
+                    address: formData.get('address'),
+                    description: formData.get('description'),
+                    contactPhone: contactPhone,
+                    images: imageUrls,
+                    latitude: latitude,
+                    longitude: longitude,
+                    location: {
+                        type: 'Point',
+                        coordinates: [longitude, latitude]
+                    },
+                    facilities: {
+                        numBedrooms: parseInt(formData.get('numBedrooms')),
+                        bathroom: {
+                            hasShower: formData.get('bathroom.hasShower') === 'true',
+                            hasBathtub: formData.get('bathroom.hasBathtub') === 'true',
+                            hasPrivateToilet: formData.get('bathroom.hasPrivateToilet') === 'true'
+                        },
+                        inventory: inventory,
+                        utilityCosts: utilityCostsArray
+                    },
+                    acceptableVehicles: formData.getAll('acceptableVehicles'),
+                    closeTime: formData.get('closeTime') || null,
+                    deposit: {
+                        required: formData.get('deposit.required') === 'true',
+                        amount: formData.get('deposit.amount') ? parseInt(formData.get('deposit.amount')) : 0
+                    }
+                };
+
+                console.log('Sending property data:', propertyData); // Debug log
+
+                // Gửi dữ liệu lên server
+                const token = Auth.getToken();
+                const createResponse = await fetch('/api/properties', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(propertyData)
+                });
+
+                const result = await createResponse.json();
+                
+                if (result.success) {
+                    alert('Đăng tin thành công!');
+                    window.location.href = '/my-properties.html';
+                } else {
+                    throw new Error(result.message || 'Có lỗi xảy ra khi đăng tin');
+                }
+            } catch (error) {
+                console.error('Create property error:', error);
+                alert('Có lỗi xảy ra khi đăng tin: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 

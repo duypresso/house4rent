@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Phòng - NhàSinhViên</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="search-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="index.html">NhàSinhViên</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="search.html" class="active">Tìm phòng</a></li>
+                <li><a href="post.html">Đăng tin</a></li>
+                <li><a href="contact.html">Liên hệ</a></li>
+                <li><a href="login.html" class="btn-login">Đăng nhập</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="search-container">
+        <div class="container">
+            <div class="search-grid">
+                <!-- Phần bộ lọc -->
+                <div class="filter-section">
+                    <h3>Bộ lọc tìm kiếm</h3>
+                    
+                    <div class="filter-group">
+                        <h4>Khu vực</h4>
+                        <select>
+                            <option>Tất cả khu vực</option>
+                            <option>Quận Hai Bà Trưng</option>
+                            <option>Quận Đống Đa</option>
+                            <option>Quận Cầu Giấy</option>
+                            <option>Quận Hoàn Kiếm</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Gần trường đại học</h4>
+                        <select>
+                            <option>Chọn trường</option>
+                            <option>Đại học Bách Khoa Hà Nội</option>
+                            <option>Đại học Kinh tế Quốc dân</option>
+                            <option>Đại học Y Hà Nội</option>
+                            <option>Học viện Ngân hàng</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Mức giá</h4>
+                        <div class="price-range">
+                            <input type="number" placeholder="Từ" min="0">
+                            <span>-</span>
+                            <input type="number" placeholder="Đến" min="0">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Diện tích</h4>
+                        <div class="area-range">
+                            <input type="number" placeholder="Từ" min="0">
+                            <span>-</span>
+                            <input type="number" placeholder="Đến" min="0">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Tiện ích</h4>
+                        <div class="amenities-filter">
+                            <label><input type="checkbox"> Điều hòa</label>
+                            <label><input type="checkbox"> Nóng lạnh</label>
+                            <label><input type="checkbox"> Ban công</label>
+                            <label><input type="checkbox"> Tủ lạnh</label>
+                            <label><input type="checkbox"> Máy giặt</label>
+                            <label><input type="checkbox"> Wifi</label>
+                        </div>
+                    </div>
+
+                    <button class="apply-filter">Áp dụng bộ lọc</button>
+                </div>
+
+                <!-- Phần kết quả tìm kiếm -->
+                <div class="search-results">
+                    <div class="search-header">
+                        <h2>Kết quả tìm kiếm</h2>
+                        <div class="sort-options">
+                            <select>
+                                <option>Sắp xếp theo</option>
+                                <option>Giá thấp đến cao</option>
+                                <option>Giá cao đến thấp</option>
+                                <option>Mới nhất</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="room-list">
+                        <!-- Mẫu phòng 1 -->
+                        <div class="room-item">
+                            <div class="room-image">
+                                <img src="https://via.placeholder.com/300x200" alt="Phòng trọ">
+                                <span class="save-room"><i class="fas fa-heart"></i></span>
+                            </div>
+                            <div class="room-details">
+                                <h3>Phòng trọ cao cấp gần ĐH Bách Khoa</h3>
+                                <p class="price">3.5 triệu/tháng</p>
+                                <p class="location"><i class="fas fa-map-marker-alt"></i> 123 Lê Thanh Nghị, Hai Bà Trưng</p>
+                                <div class="room-specs">
+                                    <span><i class="fas fa-vector-square"></i> 25m²</span>
+                                    <span><i class="fas fa-bed"></i> 1 PN</span>
+                                    <span><i class="fas fa-bath"></i> 1 VS</span>
+                                </div>
+                                <p class="description">Phòng mới xây, đầy đủ nội thất, có ban công, cửa sổ thoáng mát...</p>
+                                <div class="contact-info">
+                                    <button class="call-btn"><i class="fas fa-phone"></i> 0123.456.789</button>
+                                    <button class="message-btn"><i class="fas fa-comment"></i> Nhắn tin</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thêm các room-item khác tương tự -->
+                    </div>
+
+                    <!-- Phân trang -->
+                    <div class="pagination">
+                        <a href="#" class="active">1</a>
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#">4</a>
+                        <a href="#">5</a>
+                        <a href="#" class="next">Tiếp <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <!-- Giữ nguyên footer như trang chủ -->
+    </footer>
+</body>
+</html> 

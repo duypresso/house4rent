@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết phòng trọ - Nhà Sinh Viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .property-images .thumbnail {
+            cursor: pointer;
+            height: 100px;
+            object-fit: cover;
+        }
+        .main-image {
+            height: 400px;
+            object-fit: cover;
+        }
+        .amenity-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+        .contact-card {
+            position: sticky;
+            top: 20px;
+        }
+        #map { 
+            height: 400px; 
+            width: 100%;
+            border-radius: 8px;
+        }
+        .nearby-places {
+            margin-top: 20px;
+        }
+        .nearby-places .place-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">NhàSinhViên</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search.html">Tìm phòng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/post.html">Đăng tin</a>
+                    </li>
+                </ul>
+                <div class="d-flex" id="authButtons">
+                    <!-- Auth buttons will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row">
+            <!-- Main content -->
+            <div class="col-lg-8">
+                <!-- Property images -->
+                <div class="property-images mb-4">
+                    <div class="main-image-container mb-3">
+                        <a href="#" data-fancybox="gallery" id="mainImage">
+                            <img src="https://via.placeholder.com/800x400" class="img-fluid rounded main-image w-100" alt="Main image">
+                        </a>
+                    </div>
+                    <div class="row thumbnails" id="thumbnailContainer">
+                        <!-- Thumbnails will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Property info -->
+                <div class="property-info mb-4">
+                    <h1 class="mb-3" id="propertyName">Loading...</h1>
+                    <p class="text-muted mb-4" id="propertyAddress">
+                        <i class="fas fa-map-marker-alt"></i> Loading...
+                    </p>
+                    
+                    <!-- Basic info -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Thông tin cơ bản</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2" id="numBedrooms">
+                                    <i class="fas fa-bed"></i> Loading...
+                                </li>
+                                <li class="mb-2" id="bathroom">
+                                    <i class="fas fa-bath"></i> Loading...
+                                </li>
+                                <li class="mb-2" id="closeTime">
+                                    <i class="fas fa-clock"></i> Loading...
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Phương tiện</h5>
+                            <div id="vehicles">
+                                <!-- Vehicles will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <h5>Mô tả</h5>
+                        <p id="propertyDescription">Loading...</p>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div class="mb-4">
+                        <h5>Tiện nghi</h5>
+                        <div class="row" id="amenities">
+                            <!-- Amenities will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Utility costs -->
+                    <div class="mb-4">
+                        <h5>Chi phí tiện ích</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Dịch vụ</th>
+                                        <th>Giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="utilityCosts">
+                                    <!-- Utility costs will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Map -->
+                    <div class="mb-4">
+                        <h5>Vị trí</h5>
+                        <div id="map" style="height: 400px;" class="rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="card contact-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Thông tin liên hệ</h5>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong>Chủ trọ:</strong> <span id="ownerName">Loading...</span></p>
+                            <p class="mb-1"><strong>Số điện thoại:</strong> <span id="ownerPhone">Loading...</span></p>
+                            <p class="mb-1"><strong>Email:</strong> <span id="ownerEmail">Loading...</span></p>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100 mb-2" id="callButton">
+                            <i class="fas fa-phone"></i> Gọi điện
+                        </a>
+                        <button class="btn btn-outline-primary w-100" id="emailButton">
+                            <i class="fas fa-envelope"></i> Gửi email
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Về chúng tôi</h5>
+                    <p>Website hỗ trợ sinh viên tìm kiếm phòng trọ phù hợp với nhu cầu và ngân sách.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <p>Email: contact@nhasinhvien.vn</p>
+                    <p>Hotline: 0123.456.789</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Theo dõi chúng tôi</h5>
+                    <div class="social-links">
+                        <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Get property ID from URL
+        const propertyId = new URLSearchParams(window.location.search).get('id');
+        let map;
+        let marker;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            updateAuthButtons();
+            if (propertyId) {
+                await loadPropertyDetail();
+            } else {
+                window.location.href = '/';
+            }
+        });
+
+        async function loadPropertyDetail() {
+            try {
+                const response = await fetch(`/api/properties/${propertyId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const property = data.data;
+                    updatePropertyDetails(property);
+                    initializeMap(property);
+                    setupContactButtons(property.owner);
+                    initializeFancybox(property.images);
+                } else {
+                    alert('Không tìm thấy thông tin bài đăng');
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Load property detail error:', error);
+                alert('Có lỗi xảy ra khi tải thông tin bài đăng');
+            }
+        }
+
+        function updatePropertyDetails(property) {
+            // Update basic info
+            document.getElementById('propertyName').textContent = property.name;
+            document.getElementById('propertyAddress').innerHTML = `
+                <i class="fas fa-map-marker-alt"></i> ${property.address}
+            `;
+            document.getElementById('propertyDescription').textContent = property.description;
+            document.getElementById('numBedrooms').innerHTML = `
+                <i class="fas fa-bed"></i> ${property.facilities.numBedrooms} phòng ngủ
+            `;
+            document.getElementById('bathroom').innerHTML = `
+                <i class="fas fa-bath"></i> Nhà vệ sinh ${property.facilities.bathroom.hasPrivateToilet ? 'riêng' : 'chung'}
+            `;
+            document.getElementById('closeTime').innerHTML = `
+                <i class="fas fa-clock"></i> Giờ đóng cửa: ${property.closeTime || 'Không giới hạn'}
+            `;
+
+            // Update images
+            const mainImage = document.getElementById('mainImage');
+            mainImage.href = property.images[0];
+            mainImage.querySelector('img').src = property.images[0];
+
+            const thumbnailContainer = document.getElementById('thumbnailContainer');
+            thumbnailContainer.innerHTML = property.images.map((image, index) => `
+                <div class="col-3 mb-3">
+                    <a href="${image}" data-fancybox="gallery">
+                        <img src="${image}" class="img-fluid rounded thumbnail" alt="Thumbnail ${index + 1}">
+                    </a>
+                </div>
+            `).join('');
+
+            // Update vehicles
+            const vehiclesContainer = document.getElementById('vehicles');
+            vehiclesContainer.innerHTML = property.acceptableVehicles.map(vehicle => `
+                <span class="badge bg-secondary me-2 mb-2">${vehicle}</span>
+            `).join('');
+
+            // Update amenities
+            const amenitiesContainer = document.getElementById('amenities');
+            const amenities = property.facilities.inventory;
+            amenitiesContainer.innerHTML = amenities.map(amenity => `
+                <div class="col-md-6 mb-2">
+                    <i class="fas fa-check text-success"></i> ${amenity}
+                </div>
+            `).join('');
+
+            // Update utility costs
+            const utilityCostsContainer = document.getElementById('utilityCosts');
+            utilityCostsContainer.innerHTML = property.facilities.utilityCosts.map(cost => `
+                <tr>
+                    <td>${cost.name}</td>
+                    <td>${cost.cost.toLocaleString('vi-VN')} đ</td>
+                </tr>
+            `).join('');
+
+            // Update owner info
+            document.getElementById('ownerName').textContent = property.owner.name;
+            document.getElementById('ownerPhone').textContent = property.owner.phone;
+            document.getElementById('ownerEmail').textContent = property.owner.email;
+        }
+
+        function initializeMap(property) {
+            // Lấy tọa độ từ property
+            const [longitude, latitude] = property.location.coordinates;
+            
+            // Khởi tạo bản đồ
+            map = L.map('map').setView([latitude, longitude], 15);
+
+            // Thêm layer OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Tạo marker cho vị trí phòng trọ
+            marker = L.marker([latitude, longitude])
+                .addTo(map)
+                .bindPopup(`
+                    <div style="max-width: 200px;">
+                        <h6 style="margin: 0 0 5px 0;">${property.name}</h6>
+                        <p style="margin: 0;">${property.address}</p>
+                    </div>
+                `)
+                .openPopup();
+
+            // Thêm các địa điểm xung quanh
+            addNearbyPlaces(map, latitude, longitude);
+        }
+
+        function addNearbyPlaces(map, lat, lng) {
+            // Sử dụng Overpass API để lấy các địa điểm xung quanh
+            const radius = 500; // 500m
+            const types = [
+                { key: 'amenity', value: 'atm', icon: '🏧' },
+                { key: 'amenity', value: 'restaurant', icon: '🍽️' },
+                { key: 'shop', value: 'convenience', icon: '🏪' },
+                { key: 'highway', value: 'bus_stop', icon: '🚌' }
+            ];
+
+            types.forEach(type => {
+                const query = `
+                    [out:json][timeout:25];
+                    (
+                        node["${type.key}"="${type.value}"](around:${radius},${lat},${lng});
+                    );
+                    out body;
+                `;
+
+                fetch(`https://overpass-api.de/api/interpreter`, {
+                    method: 'POST',
+                    body: query
+                })
+                .then(response => response.json())
+                .then(data => {
+                    data.elements.forEach(element => {
+                        L.marker([element.lat, element.lon], {
+                            icon: L.divIcon({
+                                html: type.icon,
+                                className: 'place-icon',
+                                iconSize: [20, 20]
+                            })
+                        })
+                        .addTo(map)
+                        .bindPopup(element.tags.name || type.value);
+                    });
+                })
+                .catch(error => console.error('Error fetching nearby places:', error));
+            });
+
+            // Thêm chú thích cho các loại địa điểm
+            const legend = L.control({ position: 'bottomright' });
+            legend.onAdd = function() {
+                const div = L.DomUtil.create('div', 'nearby-places info legend');
+                div.innerHTML = types.map(type => 
+                    `<div><span class="place-icon">${type.icon}</span> ${type.value}</div>`
+                ).join('');
+                return div;
+            };
+            legend.addTo(map);
+        }
+
+        function setupContactButtons(owner) {
+            document.getElementById('callButton').href = `tel:${owner.phone}`;
+            document.getElementById('emailButton').addEventListener('click', () => {
+                window.location.href = `mailto:${owner.email}?subject=Hỏi về phòng trọ: ${document.getElementById('propertyName').textContent}`;
+            });
+        }
+
+        function initializeFancybox(images) {
+            Fancybox.bind('[data-fancybox="gallery"]', {
+                loop: true
+            });
+        }
+
+        function updateAuthButtons() {
+            const user = Auth.getUser();
+            const authButtons = document.getElementById('authButtons');
+            
+            if (user) {
+                authButtons.innerHTML = `
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> ${user.name}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            ${user.role === 'admin' ? '<li><a class="dropdown-item" href="admin.html">Quản lý</a></li>' : ''}
+                            ${user.role === 'owner' ? '<li><a class="dropdown-item" href="my-properties.html">Tin đã đăng</a></li>' : ''}
+                            <li><a class="dropdown-item" href="profile.html">Thông tin cá nhân</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="Auth.logout()">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                authButtons.innerHTML = `
+                    <a href="login.html" class="btn btn-outline-primary me-2">Đăng nhập</a>
+                    <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 
