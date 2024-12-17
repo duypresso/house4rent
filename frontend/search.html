@@ -4,21 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tìm Phòng - NhàSinhViên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="search-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <nav>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <div class="logo"><a href="index.html">NhàSinhViên</a></div>
-            <ul class="nav-links">
-                <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="search.html" class="active">Tìm phòng</a></li>
-                <li><a href="post.html">Đăng tin</a></li>
-                <li><a href="contact.html">Liên hệ</a></li>
-                <li><a href="login.html" class="btn-login">Đăng nhập</a></li>
-            </ul>
+            <a class="navbar-brand" href="/">NhàSinhViên</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/search.html">Tìm phòng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/post.html">Đăng tin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact.html">Liên hệ</a>
+                    </li>
+                </ul>
+                <div class="d-flex" id="authButtons">
+                    <!-- Auth buttons will be loaded here -->
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -29,59 +45,60 @@
                 <div class="filter-section">
                     <h3>Bộ lọc tìm kiếm</h3>
                     
-                    <div class="filter-group">
-                        <h4>Khu vực</h4>
-                        <select>
-                            <option>Tất cả khu vực</option>
-                            <option>Quận Hai Bà Trưng</option>
-                            <option>Quận Đống Đa</option>
-                            <option>Quận Cầu Giấy</option>
-                            <option>Quận Hoàn Kiếm</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <h4>Gần trường đại học</h4>
-                        <select>
-                            <option>Chọn trường</option>
-                            <option>Đại học Bách Khoa Hà Nội</option>
-                            <option>Đại học Kinh tế Quốc dân</option>
-                            <option>Đại học Y Hà Nội</option>
-                            <option>Học viện Ngân hàng</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <h4>Mức giá</h4>
-                        <div class="price-range">
-                            <input type="number" placeholder="Từ" min="0">
-                            <span>-</span>
-                            <input type="number" placeholder="Đến" min="0">
+                    <form id="searchForm">
+                        <div class="filter-group">
+                            <h4>Từ khóa</h4>
+                            <input type="text" id="keyword" name="keyword" placeholder="Nhập từ khóa tìm kiếm...">
                         </div>
-                    </div>
 
-                    <div class="filter-group">
-                        <h4>Diện tích</h4>
-                        <div class="area-range">
-                            <input type="number" placeholder="Từ" min="0">
-                            <span>-</span>
-                            <input type="number" placeholder="Đến" min="0">
+                        <div class="filter-group">
+                            <h4>Khu vực</h4>
+                            <select id="region" name="region">
+                                <option value="">Tất cả khu vực</option>
+                                <option value="Bình Thạnh">Bình Thạnh</option>
+                                <option value="Quận 1">Quận 1</option>
+                                <option value="Quận 2">Quận 2</option>
+                                <option value="Quận 3">Quận 3</option>
+                                <option value="Thủ Đức">Thủ Đức</option>
+                            </select>
                         </div>
-                    </div>
 
-                    <div class="filter-group">
-                        <h4>Tiện ích</h4>
-                        <div class="amenities-filter">
-                            <label><input type="checkbox"> Điều hòa</label>
-                            <label><input type="checkbox"> Nóng lạnh</label>
-                            <label><input type="checkbox"> Ban công</label>
-                            <label><input type="checkbox"> Tủ lạnh</label>
-                            <label><input type="checkbox"> Máy giặt</label>
-                            <label><input type="checkbox"> Wifi</label>
+                        <div class="filter-group">
+                            <h4>Số phòng ngủ</h4>
+                            <select id="bedrooms" name="bedrooms">
+                                <option value="">Tất cả</option>
+                                <option value="1">1 phòng</option>
+                                <option value="2">2 phòng</option>
+                                <option value="3">3 phòng</option>
+                                <option value="4">4+ phòng</option>
+                            </select>
                         </div>
-                    </div>
 
-                    <button class="apply-filter">Áp dụng bộ lọc</button>
+                        <div class="filter-group">
+                            <h4>Tiện ích</h4>
+                            <div class="amenities-filter">
+                                <label><input type="checkbox" name="inventory" value="giuong"> Giường</label>
+                                <label><input type="checkbox" name="inventory" value="tu"> Tủ</label>
+                                <label><input type="checkbox" name="inventory" value="dieu_hoa"> Điều hòa</label>
+                                <label><input type="checkbox" name="inventory" value="nong_lanh"> Nóng lạnh</label>
+                                <label><input type="checkbox" name="inventory" value="tu_lanh"> Tủ lạnh</label>
+                                <label><input type="checkbox" name="inventory" value="may_giat"> Máy giặt</label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Phương tiện được phép</h4>
+                            <div class="amenities-filter">
+                                <label><input type="checkbox" name="vehicles" value="xe_may"> Xe máy</label>
+                                <label><input type="checkbox" name="vehicles" value="xe_dap"> Xe đạp</label>
+                                <label><input type="checkbox" name="vehicles" value="o_to"> Ô tô</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="apply-filter">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                    </form>
                 </div>
 
                 <!-- Phần kết quả tìm kiếm -->
@@ -89,58 +106,252 @@
                     <div class="search-header">
                         <h2>Kết quả tìm kiếm</h2>
                         <div class="sort-options">
-                            <select>
-                                <option>Sắp xếp theo</option>
-                                <option>Giá thấp đến cao</option>
-                                <option>Giá cao đến thấp</option>
-                                <option>Mới nhất</option>
+                            <select id="sortOption">
+                                <option value="newest">Mới nhất</option>
+                                <option value="oldest">Cũ nhất</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="room-list">
-                        <!-- Mẫu phòng 1 -->
-                        <div class="room-item">
-                            <div class="room-image">
-                                <img src="https://via.placeholder.com/300x200" alt="Phòng trọ">
-                                <span class="save-room"><i class="fas fa-heart"></i></span>
-                            </div>
-                            <div class="room-details">
-                                <h3>Phòng trọ cao cấp gần ĐH Bách Khoa</h3>
-                                <p class="price">3.5 triệu/tháng</p>
-                                <p class="location"><i class="fas fa-map-marker-alt"></i> 123 Lê Thanh Nghị, Hai Bà Trưng</p>
-                                <div class="room-specs">
-                                    <span><i class="fas fa-vector-square"></i> 25m²</span>
-                                    <span><i class="fas fa-bed"></i> 1 PN</span>
-                                    <span><i class="fas fa-bath"></i> 1 VS</span>
-                                </div>
-                                <p class="description">Phòng mới xây, đầy đủ nội thất, có ban công, cửa sổ thoáng mát...</p>
-                                <div class="contact-info">
-                                    <button class="call-btn"><i class="fas fa-phone"></i> 0123.456.789</button>
-                                    <button class="message-btn"><i class="fas fa-comment"></i> Nhắn tin</button>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="room-list" id="roomList">
+                        <!-- Room items will be loaded here -->
+                    </div>
 
-                        <!-- Thêm các room-item khác tương tự -->
+                    <!-- Loading indicator -->
+                    <div id="loadingIndicator" style="display: none; text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Đang tải...</p>
                     </div>
 
                     <!-- Phân trang -->
-                    <div class="pagination">
-                        <a href="#" class="active">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">4</a>
-                        <a href="#">5</a>
-                        <a href="#" class="next">Tiếp <i class="fas fa-chevron-right"></i></a>
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination will be loaded here -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer>
-        <!-- Giữ nguyên footer như trang chủ -->
-    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let currentPage = 1;
+        const limit = 10;
+        let loading = false;
+        let totalPages = 0;
+
+        // Load properties when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthButtons();
+            loadProperties();
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search form
+            document.getElementById('searchForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                currentPage = 1;
+                loadProperties();
+            });
+
+            // Sort option
+            document.getElementById('sortOption').addEventListener('change', () => {
+                currentPage = 1;
+                loadProperties();
+            });
+        }
+
+        // Load properties
+        async function loadProperties() {
+            if (loading) return;
+            
+            try {
+                loading = true;
+                showLoading(true);
+
+                // Get form data
+                const formData = new FormData(document.getElementById('searchForm'));
+                const searchParams = new URLSearchParams();
+
+                // Add pagination params
+                searchParams.append('page', currentPage);
+                searchParams.append('limit', limit);
+
+                // Add search params
+                const keyword = formData.get('keyword');
+                if (keyword) searchParams.append('search', keyword);
+
+                const region = formData.get('region');
+                if (region) searchParams.append('region', region);
+
+                const bedrooms = formData.get('bedrooms');
+                if (bedrooms) searchParams.append('bedrooms', bedrooms);
+
+                // Add inventory filters
+                const inventory = formData.getAll('inventory');
+                if (inventory.length > 0) {
+                    searchParams.append('inventory', JSON.stringify(inventory));
+                }
+
+                // Add vehicle filters
+                const vehicles = formData.getAll('vehicles');
+                if (vehicles.length > 0) {
+                    searchParams.append('vehicles', JSON.stringify(vehicles));
+                }
+
+                // Add sort option
+                const sortOption = document.getElementById('sortOption').value;
+                if (sortOption) searchParams.append('sort', sortOption);
+
+                const response = await fetch(`/api/properties/approved?${searchParams.toString()}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayProperties(data.data);
+                    updatePagination(data.pagination);
+                    totalPages = data.pagination.totalPages;
+                } else {
+                    throw new Error(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (error) {
+                console.error('Load properties error:', error);
+                showError('Có lỗi xảy ra khi tải dữ liệu');
+            } finally {
+                loading = false;
+                showLoading(false);
+            }
+        }
+
+        // Display properties
+        function displayProperties(properties) {
+            const container = document.getElementById('roomList');
+            
+            if (properties.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>Không tìm thấy kết quả phù hợp</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = properties.map(property => `
+                <div class="room-item">
+                    <div class="room-image">
+                        <img src="${property.images[0] || 'https://via.placeholder.com/300x200'}" alt="${property.name}">
+                        <span class="save-room"><i class="fas fa-heart"></i></span>
+                    </div>
+                    <div class="room-details">
+                        <h3>${property.name}</h3>
+                        <p class="location"><i class="fas fa-map-marker-alt"></i> ${property.address}</p>
+                        <div class="room-specs">
+                            <span><i class="fas fa-bed"></i> ${property.facilities.numBedrooms} PN</span>
+                            <span><i class="fas fa-bath"></i> ${property.facilities.bathroom.hasPrivateToilet ? 'Riêng' : 'Chung'}</span>
+                            <span><i class="fas fa-clock"></i> ${property.closeTime || 'Không giới hạn'}</span>
+                        </div>
+                        <p class="description">${property.description.substring(0, 150)}...</p>
+                        <div class="contact-info">
+                            <a href="tel:${property.contactPhone}" class="call-btn">
+                                <i class="fas fa-phone"></i> ${property.contactPhone}
+                            </a>
+                            <a href="property-detail.html?id=${property._id}" class="message-btn">
+                                <i class="fas fa-info-circle"></i> Chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update pagination
+        function updatePagination(pagination) {
+            const container = document.getElementById('pagination');
+            const { total, page, totalPages } = pagination;
+
+            if (totalPages <= 1) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'flex';
+            let html = '';
+
+            // Previous button
+            if (page > 1) {
+                html += `<a href="#" onclick="changePage(${page - 1})"><i class="fas fa-chevron-left"></i></a>`;
+            }
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === page) {
+                    html += `<a href="#" class="active">${i}</a>`;
+                } else {
+                    html += `<a href="#" onclick="changePage(${i})">${i}</a>`;
+                }
+            }
+
+            // Next button
+            if (page < totalPages) {
+                html += `<a href="#" onclick="changePage(${page + 1})"><i class="fas fa-chevron-right"></i></a>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Change page
+        function changePage(page) {
+            currentPage = page;
+            loadProperties();
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show/hide loading indicator
+        function showLoading(show) {
+            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+        }
+
+        // Show error message
+        function showError(message) {
+            const container = document.getElementById('roomList');
+            container.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        // Update auth buttons
+        function updateAuthButtons() {
+            const user = Auth.getUser();
+            const authButtons = document.getElementById('authButtons');
+            
+            if (user) {
+                authButtons.innerHTML = `
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> ${user.name}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            ${user.role === 'admin' ? '<li><a class="dropdown-item" href="admin.html">Quản lý</a></li>' : ''}
+                            ${user.role === 'owner' ? '<li><a class="dropdown-item" href="my-properties.html">Tin đã đăng</a></li>' : ''}
+                            <li><a class="dropdown-item" href="profile.html">Thông tin cá nhân</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="Auth.logout()">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                authButtons.innerHTML = `
+                    <a href="login.html" class="btn btn-outline-primary me-2">Đăng nhập</a>
+                    <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                `;
+            }
+        }
+    </script>
 </body>
 </html> 
