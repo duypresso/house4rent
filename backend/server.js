@@ -45,6 +45,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Handle favicon.ico request
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end(); // Trả về status 204 No Content
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
