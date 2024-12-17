@@ -2,12 +2,21 @@ const Property = require('../models/Property');
 
 exports.getApprovedProperties = async (req, res) => {
     try {
-        const { page = 1, limit = 10, search } = req.query;
+        const { 
+            page = 1, 
+            limit = 10, 
+            search,
+            region,
+            bedrooms,
+            inventory,
+            vehicles,
+            sort = 'newest'
+        } = req.query;
         
         // Xây dựng query
         let query = { status: 'approved' };
         
-        // Thêm điều kiện tìm kiếm nếu có
+        // Tìm kiếm theo từ khóa
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: 'i' } },
@@ -16,10 +25,51 @@ exports.getApprovedProperties = async (req, res) => {
             ];
         }
 
+        // Lọc theo khu vực
+        if (region) {
+            query.address = { $regex: region, $options: 'i' };
+        }
+
+        // Lọc theo số phòng ngủ
+        if (bedrooms) {
+            if (bedrooms === '4') {
+                query['facilities.numBedrooms'] = { $gte: 4 };
+            } else {
+                query['facilities.numBedrooms'] = parseInt(bedrooms);
+            }
+        }
+
+        // Lọc theo tiện ích
+        if (inventory) {
+            const inventoryList = JSON.parse(inventory);
+            if (inventoryList.length > 0) {
+                query['facilities.inventory'] = { $all: inventoryList };
+            }
+        }
+
+        // Lọc theo phương tiện
+        if (vehicles) {
+            const vehicleList = JSON.parse(vehicles);
+            if (vehicleList.length > 0) {
+                query.acceptableVehicles = { $all: vehicleList };
+            }
+        }
+
+        // Xác định cách sắp xếp
+        let sortOption = {};
+        switch (sort) {
+            case 'oldest':
+                sortOption = { createdAt: 1 };
+                break;
+            case 'newest':
+            default:
+                sortOption = { createdAt: -1 };
+        }
+
         // Thực hiện query với phân trang
         const properties = await Property.find(query)
-            .populate('owner', 'name phone')
-            .sort('-createdAt')
+            .populate('owner', 'name phone email')
+            .sort(sortOption)
             .skip((page - 1) * limit)
             .limit(parseInt(limit));
 
