@@ -120,12 +120,18 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
         const formData = {
             name: form.name.value,
             address: form.address.value,
+            district: form.district.value,
+            ward: form.ward.value,
             description: form.description.value,
             contactPhone: form.contactPhone.value,
             latitude: parseFloat(form.latitude.value),
             longitude: parseFloat(form.longitude.value),
             closeTime: form.closeTime.value,
             images: imageUrls,
+            location: {
+                type: 'Point',
+                coordinates: [parseFloat(form.longitude.value), parseFloat(form.latitude.value)]
+            },
             facilities: {
                 inventory: Array.from(form.querySelectorAll('input[name="inventory"]:checked')).map(input => input.value),
                 numBedrooms: parseInt(form.numBedrooms.value),
@@ -145,6 +151,26 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
             },
             acceptableVehicles: Array.from(form.querySelectorAll('input[name="acceptableVehicles"]:checked')).map(input => input.value)
         };
+
+        // Kiểm tra dữ liệu quận và phường
+        if (!formData.district || formData.district === "") {
+            throw new Error('Vui lòng chọn quận');
+        }
+        if (!formData.ward || formData.ward === "") {
+            throw new Error('Vui lòng nhập phường');
+        }
+
+        // Kiểm tra tọa độ
+        if (!formData.location.coordinates[0] || !formData.location.coordinates[1]) {
+            throw new Error('Vui lòng chọn vị trí trên bản đồ');
+        }
+
+        // Log dữ liệu để debug
+        console.log('Form data:', {
+            district: formData.district,
+            ward: formData.ward,
+            coordinates: formData.location.coordinates
+        });
 
         // Gửi request tạo tin đăng
         console.log('Creating property...', formData);

@@ -55,11 +55,35 @@
                             <h4>Khu vực</h4>
                             <select id="region" name="region">
                                 <option value="">Tất cả khu vực</option>
-                                <option value="Bình Thạnh">Bình Thạnh</option>
                                 <option value="Quận 1">Quận 1</option>
                                 <option value="Quận 2">Quận 2</option>
                                 <option value="Quận 3">Quận 3</option>
-                                <option value="Thủ Đức">Thủ Đức</option>
+                                <option value="Quận 4">Quận 4</option>
+                                <option value="Quận 5">Quận 5</option>
+                                <option value="Quận 6">Quận 6</option>
+                                <option value="Quận 7">Quận 7</option>
+                                <option value="Quận 8">Quận 8</option>
+                                <option value="Quận 9">Quận 9</option>
+                                <option value="Quận 10">Quận 10</option>
+                                <option value="Quận 11">Quận 11</option>
+                                <option value="Quận 12">Quận 12</option>
+                                <option value="Quận Bình Thạnh">Quận Bình Thạnh</option>
+                                <option value="Quận Gò Vấp">Quận Gò Vấp</option>
+                                <option value="Quận Phú Nhuận">Quận Phú Nhuận</option>
+                                <option value="Quận Tân Bình">Quận Tân Bình</option>
+                                <option value="Quận Tân Phú">Quận Tân Phú</option>
+                                <option value="Thành phố Thủ Đức">TP. Thủ Đức</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Bán kính</h4>
+                            <select id="radius" name="radius">
+                                <option value="">Không giới hạn</option>
+                                <option value="500">500m</option>
+                                <option value="1000">1km</option>
+                                <option value="2000">2km</option>
+                                <option value="5000">5km</option>
                             </select>
                         </div>
 
@@ -143,6 +167,23 @@
         // Load properties when page loads
         document.addEventListener('DOMContentLoaded', () => {
             updateAuthButtons();
+            // Đọc tham số từ URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const search = urlParams.get('search');
+            const district = urlParams.get('district');
+            const radius = urlParams.get('radius');
+
+            // Điền các giá trị vào form
+            if (search) {
+                document.getElementById('keyword').value = decodeURIComponent(search);
+            }
+            if (district) {
+                document.getElementById('region').value = decodeURIComponent(district);
+            }
+            if (radius) {
+                document.getElementById('radius').value = decodeURIComponent(radius);
+            }
+
             loadProperties();
             setupEventListeners();
         });
@@ -171,8 +212,9 @@
                 loading = true;
                 showLoading(true);
 
-                // Get form data
+                // Get form data and URL params
                 const formData = new FormData(document.getElementById('searchForm'));
+                const urlParams = new URLSearchParams(window.location.search);
                 const searchParams = new URLSearchParams();
 
                 // Add pagination params
@@ -180,11 +222,26 @@
                 searchParams.append('limit', limit);
 
                 // Add search params
-                const keyword = formData.get('keyword');
-                if (keyword) searchParams.append('search', keyword);
+                const search = formData.get('keyword') || urlParams.get('search');
+                if (search) {
+                    const decodedSearch = decodeURIComponent(search).trim();
+                    if (decodedSearch) {
+                        searchParams.append('search', decodedSearch);
+                    }
+                }
 
-                const region = formData.get('region');
-                if (region) searchParams.append('region', region);
+                const district = formData.get('region') || urlParams.get('district');
+                if (district) {
+                    const decodedDistrict = decodeURIComponent(district).trim();
+                    if (decodedDistrict) {
+                        searchParams.append('district', decodedDistrict);
+                    }
+                }
+
+                const radius = formData.get('radius') || urlParams.get('radius');
+                if (radius) {
+                    searchParams.append('radius', radius);
+                }
 
                 const bedrooms = formData.get('bedrooms');
                 if (bedrooms) searchParams.append('bedrooms', bedrooms);
@@ -205,8 +262,12 @@
                 const sortOption = document.getElementById('sortOption').value;
                 if (sortOption) searchParams.append('sort', sortOption);
 
+                console.log('Search URL params:', Object.fromEntries(searchParams));
+
                 const response = await fetch(`/api/properties/approved?${searchParams.toString()}`);
                 const data = await response.json();
+
+                console.log('API Response:', data);
 
                 if (data.success) {
                     displayProperties(data.data);
