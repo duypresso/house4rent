@@ -53,16 +53,14 @@
                             </div>
                             <div class="col-md-6">
                                 <select class="form-select" id="searchRegion">
-                                    <option value="">Chọn khu vực</option>
+                                    <option value="">Chọn Quận/Huyện</option>
                                     <option value="Quận 1">Quận 1</option>
-                                    <option value="Quận 2">Quận 2</option>
                                     <option value="Quận 3">Quận 3</option>
                                     <option value="Quận 4">Quận 4</option>
                                     <option value="Quận 5">Quận 5</option>
                                     <option value="Quận 6">Quận 6</option>
                                     <option value="Quận 7">Quận 7</option>
                                     <option value="Quận 8">Quận 8</option>
-                                    <option value="Quận 9">Quận 9</option>
                                     <option value="Quận 10">Quận 10</option>
                                     <option value="Quận 11">Quận 11</option>
                                     <option value="Quận 12">Quận 12</option>
@@ -73,6 +71,11 @@
                                     <option value="Quận Tân Bình">Quận Tân Bình</option>
                                     <option value="Quận Tân Phú">Quận Tân Phú</option>
                                     <option value="Thành phố Thủ Đức">Thành phố Thủ Đức</option>
+                                    <option value="Huyện Bình Chánh">Huyện Bình Chánh</option>
+                                    <option value="Huyện Cần Giờ">Huyện Cần Giờ</option>
+                                    <option value="Huyện Củ Chi">Huyện Củ Chi</option>
+                                    <option value="Huyện Hóc Môn">Huyện Hóc Môn</option>
+                                    <option value="Huyện Nhà Bè">Huyện Nhà Bè</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -244,22 +247,21 @@
                 const district = document.getElementById('searchRegion').value;
                 const radius = document.getElementById('searchRadius').value;
                 
-                // Tạo URL với các tham số tìm kiếm
                 const searchParams = new URLSearchParams();
                 
-                // Thêm từ khóa nếu có
                 if (keyword) {
                     searchParams.append('keyword', keyword);
                 }
                 
-                // Nếu có chọn quận, thêm quận làm tâm tìm kiếm
                 if (district) {
-                    searchParams.append('center', district);
-                    // Thêm bán kính tìm kiếm (mặc định là 1km nếu không chọn)
-                    searchParams.append('radius', radius || '1000');
+                    searchParams.append('district', district);
+                    searchParams.append('exactDistrict', 'true');
                 }
                 
-                // Chuyển hướng đến trang search với các tham số
+                if (radius) {
+                    searchParams.append('radius', radius);
+                }
+                
                 window.location.href = `search.html?${searchParams.toString()}`;
             });
 

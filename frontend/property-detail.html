@@ -41,6 +41,54 @@
             height: 20px;
             margin-right: 5px;
         }
+        .amenity-item {
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .amenity-item i {
+            width: 20px;
+            color: #0d6efd;
+        }
+        .utility-cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .utility-cost-item:last-child {
+            border-bottom: none;
+        }
+        .utility-icon {
+            width: 24px;
+            text-align: center;
+            margin-right: 8px;
+        }
+        .cost-amount {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        .table > :not(caption) > * > * {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        .table > thead {
+            background-color: #f8f9fa;
+        }
+        .badge {
+            cursor: help;
+        }
+        .text-primary {
+            color: #0d6efd !important;
+        }
+        .utility-icon {
+            width: 24px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -95,6 +143,20 @@
                     <!-- Basic info -->
                     <div class="row mb-4">
                         <div class="col-md-6">
+                            <h5>Thông tin chi phí</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2" id="depositInfo">
+                                    <i class="fas fa-money-bill"></i> Loading...
+                                </li>
+                                <li class="mb-2" id="monthlyRent">
+                                    <i class="fas fa-file-invoice-dollar"></i> Loading...
+                                </li>
+                                <li class="mb-2" id="minStay">
+                                    <i class="fas fa-calendar-alt"></i> Loading...
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
                             <h5>Thông tin cơ bản</h5>
                             <ul class="list-unstyled">
                                 <li class="mb-2" id="numBedrooms">
@@ -109,7 +171,7 @@
                             </ul>
                         </div>
                         <div class="col-md-6">
-                            <h5>Phương tiện</h5>
+                            <h5>Được phép</h5>
                             <div id="vehicles">
                                 <!-- Vehicles will be loaded here -->
                             </div>
@@ -130,21 +192,51 @@
                         </div>
                     </div>
 
-                    <!-- Utility costs -->
+                    <!-- Bảng giá chi tiết -->
                     <div class="mb-4">
-                        <h5>Chi phí tiện ích</h5>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Dịch vụ</th>
-                                        <th>Giá</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="utilityCosts">
-                                    <!-- Utility costs will be loaded here -->
-                                </tbody>
-                            </table>
+                        <h5>Bảng giá chi tiết</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Chi phí cơ bản -->
+                                <div class="table-responsive mb-4">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th colspan="2">Chi phí cơ bản</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Tiền thuê hàng tháng</td>
+                                                <td class="text-end" id="monthlyRentCell">Loading...</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tiền đặt cọc</td>
+                                                <td class="text-end" id="depositCell">Loading...</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Thời gian thuê tối thiểu</td>
+                                                <td class="text-end" id="minStayCell">Loading...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Chi phí dịch vụ -->
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Chi phí dịch vụ</th>
+                                                <th class="text-end" style="width: 200px;">Đơn giá</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="utilityCosts">
+                                            <!-- Chi phí dịch vụ sẽ được load ở đây -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -225,6 +317,9 @@
             try {
                 const response = await fetch(`/api/properties/${propertyId}`);
                 const data = await response.json();
+                
+                // Log dữ liệu nhận được từ server
+                console.log('Property data received:', data);
 
                 if (data.success) {
                     const property = data.data;
@@ -275,27 +370,158 @@
 
             // Update vehicles
             const vehiclesContainer = document.getElementById('vehicles');
-            vehiclesContainer.innerHTML = property.acceptableVehicles.map(vehicle => `
-                <span class="badge bg-secondary me-2 mb-2">${vehicle}</span>
-            `).join('');
+            vehiclesContainer.innerHTML = property.acceptableVehicles.map(vehicle => {
+                // Chuyển đổi định dạng hiển thị
+                const displayName = {
+                    'xe_may': 'Xe máy',
+                    'xe_dap': 'Thú cưng',
+                    'thu_cung': 'Thú cưng',
+                    'o_to': 'Ô tô'
+                }[vehicle] || vehicle;
+                
+                return `<span class="badge bg-secondary me-2 mb-2">${displayName}</span>`;
+            }).join('');
 
             // Update amenities
             const amenitiesContainer = document.getElementById('amenities');
-            const amenities = property.facilities.inventory;
+            const amenities = [];
+
+            // Thêm tiện ích phòng tắm
+            if (property.facilities.bathroom) {
+                if (property.facilities.bathroom.hasPrivateToilet) {
+                    amenities.push('<i class="fas fa-toilet"></i> Toilet riêng');
+                }
+                if (property.facilities.bathroom.hasShower) {
+                    amenities.push('<i class="fas fa-shower"></i> Vòi sen');
+                }
+                if (property.facilities.bathroom.hasWaterHeater) {
+                    amenities.push('<i class="fas fa-hot-tub"></i> Nóng lạnh');
+                }
+            }
+
+            // Thêm các tiện ích cơ bản từ inventory
+            const inventoryIcons = {
+                'giuong': '<i class="fas fa-bed"></i> Giường',
+                'tu': '<i class="fas fa-door-closed"></i> Tủ',
+                'dieu_hoa': '<i class="fas fa-snowflake"></i> Điều hòa',
+                'nong_lanh': '<i class="fas fa-temperature-high"></i> Nóng lạnh',
+                'tu_lanh': '<i class="fas fa-box"></i> Tủ lạnh',
+                'may_giat': '<i class="fas fa-tshirt"></i> Máy giặt',
+                'ban_ghe': '<i class="fas fa-chair"></i> Bàn ghế',
+                'wifi': '<i class="fas fa-wifi"></i> Wifi',
+                'camera': '<i class="fas fa-video"></i> Camera an ninh',
+                'bao_ve': '<i class="fas fa-user-shield"></i> Bảo vệ',
+                'cho_de_xe': '<i class="fas fa-parking"></i> Chỗ để xe',
+                'san_phoi': '<i class="fas fa-tshirt"></i> Sân phơi',
+                'nha_bep': '<i class="fas fa-utensils"></i> Nhà bếp'
+            };
+
+            if (property.facilities.inventory && property.facilities.inventory.length > 0) {
+                property.facilities.inventory.forEach(item => {
+                    if (inventoryIcons[item]) {
+                        amenities.push(inventoryIcons[item]);
+                    } else {
+                        amenities.push(`<i class="fas fa-check"></i> ${item}`);
+                    }
+                });
+            }
+
+            // Hiển thị danh sách tiện ích
             amenitiesContainer.innerHTML = amenities.map(amenity => `
-                <div class="col-md-6 mb-2">
-                    <i class="fas fa-check text-success"></i> ${amenity}
+                <div class="col-md-4 mb-3">
+                    <div class="amenity-item">
+                        ${amenity}
+                    </div>
                 </div>
             `).join('');
 
-            // Update utility costs
+            // Cập nhật thông tin chi phí cơ bản ở phần thông tin chung
+            document.getElementById('depositInfo').innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-money-bill"></i> Tiền cọc:</span>
+                    <strong class="text-primary">
+                        ${property.deposit?.amount === 0 ? 'Không yêu cầu đặt cọc' : `${formatMoney(property.deposit?.amount)} đ`}
+                        ${property.deposit?.months > 0 ? `<small class="text-muted">(${property.deposit.months} tháng)</small>` : ''}
+                    </strong>
+                </div>
+            `;
+
+            document.getElementById('monthlyRent').innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-file-invoice-dollar"></i> Tiền thuê:</span>
+                    <strong class="text-primary">${formatMoney(property.monthlyRent)} đ/tháng</strong>
+                </div>
+            `;
+
+            document.getElementById('minStay').innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-calendar-alt"></i> Thời gian thuê tối thiểu:</span>
+                    <strong>${property.minStayMonths || 0} tháng</strong>
+                </div>
+            `;
+
+            // Cập nhật bảng chi phí chi tiết
+            document.getElementById('monthlyRentCell').innerHTML = `
+                <strong class="text-primary">${formatMoney(property.monthlyRent)} đ</strong>
+                <small class="text-muted">/tháng</small>
+            `;
+
+            document.getElementById('depositCell').innerHTML = `
+                <strong class="text-primary">
+                    ${property.deposit?.amount === 0 ? 'Không yêu cầu đặt cọc' : `${formatMoney(property.deposit?.amount)} đ`}
+                </strong>
+                ${property.deposit?.months > 0 ? 
+                    `<small class="text-muted">(${property.deposit.months} tháng)</small>` : 
+                    ''
+                }
+            `;
+
+            document.getElementById('minStayCell').innerHTML = `
+                <strong>${property.minStayMonths || 0}</strong>
+                <small class="text-muted">tháng</small>
+            `;
+
+            // Cập nhật chi phí dịch vụ
             const utilityCostsContainer = document.getElementById('utilityCosts');
-            utilityCostsContainer.innerHTML = property.facilities.utilityCosts.map(cost => `
-                <tr>
-                    <td>${cost.name}</td>
-                    <td>${cost.cost.toLocaleString('vi-VN')} đ</td>
-                </tr>
-            `).join('');
+            const utilities = property.utilities || property.facilities?.utilityCosts || [];
+            
+            if (utilities.length > 0) {
+                utilityCostsContainer.innerHTML = utilities.map(cost => `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                ${getUtilityIcon(cost.name)} 
+                                <span class="ms-2">${cost.name}</span>
+                                ${cost.description ? 
+                                    `<span class="badge bg-light text-dark ms-2" 
+                                           data-bs-toggle="tooltip" 
+                                           title="${cost.description}">
+                                        <i class="fas fa-info-circle"></i>
+                                    </span>` : 
+                                    ''
+                                }
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <strong class="text-primary">${formatMoney(cost.cost)} đ</strong>
+                            <small class="text-muted">/${cost.unit || 'tháng'}</small>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Khởi tạo tooltips
+                const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip));
+            } else {
+                utilityCostsContainer.innerHTML = `
+                    <tr>
+                        <td colspan="2" class="text-center text-muted py-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Chưa có thông tin chi phí dịch vụ
+                        </td>
+                    </tr>
+                `;
+            }
 
             // Update owner info
             document.getElementById('ownerName').textContent = property.owner.name;
@@ -420,6 +646,32 @@
                     <a href="register.html" class="btn btn-primary">Đăng ký</a>
                 `;
             }
+        }
+
+        // Hàm format tiền tệ
+        function formatMoney(amount) {
+            if (amount === undefined || amount === null) return 'Thương lượng';
+            // Số 0 vẫn hiển thị là 0đ thay vì "Thương lượng"
+            return amount.toLocaleString('vi-VN');
+        }
+
+        // Cập nhật hàm getUtilityIcon để thêm các loại chi phí mới
+        function getUtilityIcon(utilityName) {
+            const icons = {
+                'Điện': '<i class="fas fa-bolt text-warning"></i>',
+                'Nước': '<i class="fas fa-tint text-primary"></i>',
+                'Internet': '<i class="fas fa-wifi text-info"></i>',
+                'Rác': '<i class="fas fa-trash text-secondary"></i>',
+                'Gửi xe': '<i class="fas fa-motorcycle text-success"></i>',
+                'Dịch vụ': '<i class="fas fa-concierge-bell text-primary"></i>',
+                'Vệ sinh': '<i class="fas fa-broom text-info"></i>',
+                'Phí quản lý': '<i class="fas fa-tasks text-info"></i>',
+                'Phí chung cư': '<i class="fas fa-building text-secondary"></i>',
+                'Điện sinh hoạt': '<i class="fas fa-plug text-warning"></i>',
+                'Nước sinh hoạt': '<i class="fas fa-hand-holding-water text-primary"></i>',
+                'Bảo trì': '<i class="fas fa-tools text-secondary"></i>'
+            };
+            return icons[utilityName] || '<i class="fas fa-file-invoice-dollar"></i>';
         }
     </script>
 </body>

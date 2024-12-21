@@ -54,25 +54,29 @@
                         <div class="filter-group">
                             <h4>Khu vực</h4>
                             <select id="region" name="region">
-                                <option value="">Tất cả khu vực</option>
+                                <option value="">Chọn Quận/Huyện</option>
                                 <option value="Quận 1">Quận 1</option>
-                                <option value="Quận 2">Quận 2</option>
                                 <option value="Quận 3">Quận 3</option>
                                 <option value="Quận 4">Quận 4</option>
                                 <option value="Quận 5">Quận 5</option>
                                 <option value="Quận 6">Quận 6</option>
                                 <option value="Quận 7">Quận 7</option>
                                 <option value="Quận 8">Quận 8</option>
-                                <option value="Quận 9">Quận 9</option>
                                 <option value="Quận 10">Quận 10</option>
                                 <option value="Quận 11">Quận 11</option>
                                 <option value="Quận 12">Quận 12</option>
+                                <option value="Quận Bình Tân">Quận Bình Tân</option>
                                 <option value="Quận Bình Thạnh">Quận Bình Thạnh</option>
                                 <option value="Quận Gò Vấp">Quận Gò Vấp</option>
                                 <option value="Quận Phú Nhuận">Quận Phú Nhuận</option>
                                 <option value="Quận Tân Bình">Quận Tân Bình</option>
                                 <option value="Quận Tân Phú">Quận Tân Phú</option>
-                                <option value="Thành phố Thủ Đức">TP. Thủ Đức</option>
+                                <option value="Thành phố Thủ Đức">Thành phố Thủ Đức</option>
+                                <option value="Huyện Bình Chánh">Huyện Bình Chánh</option>
+                                <option value="Huyện Cần Giờ">Huyện Cần Giờ</option>
+                                <option value="Huyện Củ Chi">Huyện Củ Chi</option>
+                                <option value="Huyện Hóc Môn">Huyện Hóc Môn</option>
+                                <option value="Huyện Nhà Bè">Huyện Nhà Bè</option>
                             </select>
                         </div>
 
@@ -212,7 +216,6 @@
                 loading = true;
                 showLoading(true);
 
-                // Get form data and URL params
                 const formData = new FormData(document.getElementById('searchForm'));
                 const urlParams = new URLSearchParams(window.location.search);
                 const searchParams = new URLSearchParams();
@@ -221,21 +224,17 @@
                 searchParams.append('page', currentPage);
                 searchParams.append('limit', limit);
 
-                // Add search params
-                const search = formData.get('keyword') || urlParams.get('search');
-                if (search) {
-                    const decodedSearch = decodeURIComponent(search).trim();
-                    if (decodedSearch) {
-                        searchParams.append('search', decodedSearch);
-                    }
-                }
-
+                // Xử lý tìm kiếm theo quận/huyện
                 const district = formData.get('region') || urlParams.get('district');
                 if (district) {
-                    const decodedDistrict = decodeURIComponent(district).trim();
-                    if (decodedDistrict) {
-                        searchParams.append('district', decodedDistrict);
-                    }
+                    searchParams.append('district', district);
+                    searchParams.append('exactDistrict', 'true');
+                }
+
+                // Xử lý các tham số tìm kiếm khác
+                const keyword = formData.get('keyword') || urlParams.get('keyword');
+                if (keyword) {
+                    searchParams.append('keyword', keyword);
                 }
 
                 const radius = formData.get('radius') || urlParams.get('radius');
@@ -243,16 +242,15 @@
                     searchParams.append('radius', radius);
                 }
 
+                // Thêm các bộ lọc khác
                 const bedrooms = formData.get('bedrooms');
                 if (bedrooms) searchParams.append('bedrooms', bedrooms);
 
-                // Add inventory filters
                 const inventory = formData.getAll('inventory');
                 if (inventory.length > 0) {
                     searchParams.append('inventory', JSON.stringify(inventory));
                 }
 
-                // Add vehicle filters
                 const vehicles = formData.getAll('vehicles');
                 if (vehicles.length > 0) {
                     searchParams.append('vehicles', JSON.stringify(vehicles));
@@ -262,12 +260,8 @@
                 const sortOption = document.getElementById('sortOption').value;
                 if (sortOption) searchParams.append('sort', sortOption);
 
-                console.log('Search URL params:', Object.fromEntries(searchParams));
-
                 const response = await fetch(`/api/properties/approved?${searchParams.toString()}`);
                 const data = await response.json();
-
-                console.log('API Response:', data);
 
                 if (data.success) {
                     displayProperties(data.data);
@@ -288,12 +282,14 @@
         // Display properties
         function displayProperties(properties) {
             const container = document.getElementById('roomList');
+            const selectedDistrict = document.getElementById('region').value || 
+                                   new URLSearchParams(window.location.search).get('district');
             
             if (properties.length === 0) {
                 container.innerHTML = `
                     <div class="no-results">
                         <i class="fas fa-search"></i>
-                        <p>Không tìm thấy kết quả phù hợp</p>
+                        <p>Không tìm thấy phòng trọ nào${selectedDistrict ? ` tại ${selectedDistrict}` : ''}</p>
                     </div>
                 `;
                 return;

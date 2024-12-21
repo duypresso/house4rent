@@ -57,6 +57,24 @@ const propertySchema = new mongoose.Schema({
       type: [Number], // [longitude, latitude]
       required: true
     }
+  },
+  monthlyRent: {
+    type: Number,
+    required: true
+  },
+  minStayMonths: {
+    type: Number,
+    default: 0
+  },
+  deposit: {
+    amount: {
+      type: Number,
+      default: 0
+    },
+    months: {
+      type: Number,
+      default: 0
+    }
   }
 }, {
   timestamps: true
