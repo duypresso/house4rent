@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chỉnh Sửa Tin - NhàSinhViên</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="post-styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/">NhàSinhViên</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/search.html">Tìm phòng</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/post.html">Đăng tin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/contact.html">Liên hệ</a>
+            </li>
+          </ul>
+          <div class="d-flex" id="authButtons">
+            <!-- Auth buttons will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="post-container">
+      <div class="container">
+        <div class="post-form-container">
+          <h1>Chỉnh Sửa Tin Đăng</h1>
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Tin đăng sau khi chỉnh sửa sẽ được chuyển về trạng thái chờ duyệt
+          </div>
+
+          <form id="editForm" class="post-form">
+            <div class="form-section">
+              <h3>Thông tin cơ bản</h3>
+              <div class="form-group">
+                <label>Tiêu đề</label>
+                <input type="text" name="name" class="form-control" required />
+              </div>
+
+              <div class="form-group">
+                <label>Địa chỉ</label>
+                <input
+                  type="text"
+                  name="address"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Quận/Huyện</label>
+                <select name="district" class="form-control" required>
+                  <option value="">Chọn Quận/Huyện</option>
+                  <option value="Quận 1">Quận 1</option>
+                  <option value="Quận 3">Quận 3</option>
+                  <option value="Quận 4">Quận 4</option>
+                  <option value="Quận 5">Quận 5</option>
+                  <option value="Quận 6">Quận 6</option>
+                  <option value="Quận 7">Quận 7</option>
+                  <option value="Quận 8">Quận 8</option>
+                  <option value="Quận 10">Quận 10</option>
+                  <option value="Quận 11">Quận 11</option>
+                  <option value="Quận 12">Quận 12</option>
+                  <option value="Quận Bình Tân">Quận Bình Tân</option>
+                  <option value="Quận Bình Thạnh">Quận Bình Thạnh</option>
+                  <option value="Quận Gò Vấp">Quận Gò Vấp</option>
+                  <option value="Quận Phú Nhuận">Quận Phú Nhuận</option>
+                  <option value="Quận Tân Bình">Quận Tân Bình</option>
+                  <option value="Quận Tân Phú">Quận Tân Phú</option>
+                  <option value="Thành phố Thủ Đức">Thành phố Thủ Đức</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Mô tả chi tiết</label>
+                <textarea
+                  name="description"
+                  class="form-control"
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Thông tin phòng</h3>
+              <div class="form-group">
+                <label>Số phòng ngủ</label>
+                <input
+                  type="number"
+                  name="numBedrooms"
+                  class="form-control"
+                  min="1"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Nhà vệ sinh</label>
+                <select name="bathroom" class="form-control" required>
+                  <option value="private">Riêng</option>
+                  <option value="shared">Chung</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Tiện ích</h3>
+              <div class="amenities-grid">
+                <div class="amenity-item">
+                  <input
+                    type="checkbox"
+                    name="amenities"
+                    value="giuong"
+                    id="giuong"
+                  />
+                  <label for="giuong">
+                    <i class="fas fa-bed"></i>
+                    Giường
+                  </label>
+                </div>
+                <div class="amenity-item">
+                  <input type="checkbox" name="amenities" value="tu" id="tu" />
+                  <label for="tu">
+                    <i class="fas fa-door-closed"></i>
+                    Tủ
+                  </label>
+                </div>
+                <div class="amenity-item">
+                  <input
+                    type="checkbox"
+                    name="amenities"
+                    value="dieu_hoa"
+                    id="dieu_hoa"
+                  />
+                  <label for="dieu_hoa">
+                    <i class="fas fa-snowflake"></i>
+                    Điều hòa
+                  </label>
+                </div>
+                <div class="amenity-item">
+                  <input
+                    type="checkbox"
+                    name="amenities"
+                    value="nong_lanh"
+                    id="nong_lanh"
+                  />
+                  <label for="nong_lanh">
+                    <i class="fas fa-hot-tub"></i>
+                    Nóng lạnh
+                  </label>
+                </div>
+                <div class="amenity-item">
+                  <input
+                    type="checkbox"
+                    name="amenities"
+                    value="tu_lanh"
+                    id="tu_lanh"
+                  />
+                  <label for="tu_lanh">
+                    <i class="fas fa-cube"></i>
+                    Tủ lạnh
+                  </label>
+                </div>
+                <div class="amenity-item">
+                  <input
+                    type="checkbox"
+                    name="amenities"
+                    value="may_giat"
+                    id="may_giat"
+                  />
+                  <label for="may_giat">
+                    <i class="fas fa-tshirt"></i>
+                    Máy giặt
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Phương tiện được phép</h3>
+              <div class="vehicles-grid">
+                <div class="vehicle-item">
+                  <input
+                    type="checkbox"
+                    name="vehicles"
+                    value="xe_may"
+                    id="xe_may"
+                  />
+                  <label for="xe_may">
+                    <i class="fas fa-motorcycle"></i>
+                    Xe máy
+                  </label>
+                </div>
+                <div class="vehicle-item">
+                  <input
+                    type="checkbox"
+                    name="vehicles"
+                    value="xe_dap"
+                    id="xe_dap"
+                  />
+                  <label for="xe_dap">
+                    <i class="fas fa-bicycle"></i>
+                    Xe đạp
+                  </label>
+                </div>
+                <div class="vehicle-item">
+                  <input
+                    type="checkbox"
+                    name="vehicles"
+                    value="o_to"
+                    id="o_to"
+                  />
+                  <label for="o_to">
+                    <i class="fas fa-car"></i>
+                    Ô tô
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Hình ảnh</h3>
+              <div class="form-group">
+                <div class="image-upload-container">
+                  <input
+                    type="file"
+                    id="images"
+                    multiple
+                    accept="image/*"
+                    class="form-control"
+                  />
+                  <div class="upload-hint">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Chọn hoặc kéo thả hình ảnh vào đây</p>
+                    <span>Hỗ trợ: JPG, PNG (Tối đa 5MB/ảnh)</span>
+                  </div>
+                </div>
+                <div id="imagePreview" class="image-preview"></div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="history.back()"
+              >
+                <i class="fas fa-arrow-left"></i> Quay lại
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu thay đổi
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      let currentImages = [];
+      let propertyId = null;
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const user = Auth.getUser();
+          if (!user || user.role !== "owner") {
+            window.location.href = "/login.html";
+            return;
+          }
+
+          updateAuthButtons();
+
+          // Lấy ID từ URL
+          const urlParams = new URLSearchParams(window.location.search);
+          propertyId = urlParams.get("id");
+
+          if (!propertyId) {
+            showError("Không tìm thấy ID tin đăng");
+            return;
+          }
+
+          await loadPropertyData();
+          setupImageUpload();
+        } catch (error) {
+          console.error("Init error:", error);
+          showError("Có lỗi xảy ra khi khởi tạo trang");
+        }
+      });
+
+      async function loadPropertyData() {
+        showLoading(true);
+        try {
+          const token = Auth.getToken();
+          const response = await fetch(
+            `/api/properties/my-properties/${propertyId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const data = await response.json();
+          if (!data.success) {
+            throw new Error(data.message);
+          }
+
+          // Log để debug
+          console.log("Property data:", data.data);
+
+          fillFormData(data.data);
+        } catch (error) {
+          console.error("Load property error:", error);
+          showError(error.message);
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function fillFormData(property) {
+        if (!property) return;
+
+        const form = document.getElementById("editForm");
+        if (!form) return;
+
+        try {
+          // Fill thông tin cơ bản
+          const elements = {
+            name: form.querySelector('[name="name"]'),
+            address: form.querySelector('[name="address"]'),
+            district: form.querySelector('[name="district"]'),
+            description: form.querySelector('[name="description"]'),
+            numBedrooms: form.querySelector('[name="numBedrooms"]'),
+            bathroom: form.querySelector('[name="bathroom"]'),
+          };
+
+          // Kiểm tra và điền giá trị cho từng trường
+          if (elements.name) elements.name.value = property.name || "";
+          if (elements.address) elements.address.value = property.address || "";
+          if (elements.district)
+            elements.district.value = property.district || "";
+          if (elements.description)
+            elements.description.value = property.description || "";
+
+          // Fill thông tin phòng
+          if (property.facilities) {
+            if (elements.numBedrooms) {
+              elements.numBedrooms.value = property.facilities.numBedrooms || 1;
+            }
+            if (elements.bathroom) {
+              elements.bathroom.value = property.facilities.bathroom
+                ?.hasPrivateToilet
+                ? "private"
+                : "shared";
+            }
+
+            // Fill tiện ích
+            const amenities = property.facilities.amenities || [];
+            form
+              .querySelectorAll('input[name="amenities"]')
+              .forEach((checkbox) => {
+                checkbox.checked = amenities.includes(checkbox.value);
+              });
+
+            // Fill phương tiện
+            const vehicles = property.facilities.vehicles || [];
+            form
+              .querySelectorAll('input[name="vehicles"]')
+              .forEach((checkbox) => {
+                checkbox.checked = vehicles.includes(checkbox.value);
+              });
+          }
+
+          // Fill hình ảnh
+          currentImages = property.images || [];
+          updateImagePreview();
+        } catch (error) {
+          console.error("Error filling form data:", error);
+          showError("Có lỗi khi điền thông tin vào form");
+        }
+      }
+
+      function setupImageUpload() {
+        const imageInput = document.getElementById("images");
+        if (imageInput) {
+          imageInput.addEventListener("change", handleImageUpload);
+        }
+      }
+
+      async function handleImageUpload(event) {
+        const files = event.target.files;
+        if (!files.length) return;
+
+        try {
+          const formData = new FormData();
+          for (let file of files) {
+            formData.append("images", file);
+          }
+
+          const token = Auth.getToken();
+          const response = await fetch("/api/upload", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          });
+
+          const data = await response.json();
+          if (!data.success) {
+            throw new Error(data.message);
+          }
+
+          currentImages = [...currentImages, ...data.urls];
+          updateImagePreview();
+        } catch (error) {
+          console.error("Upload error:", error);
+          alert("Có lỗi xảy ra khi tải ảnh lên");
+        }
+      }
+
+      function updateImagePreview() {
+        const preview = document.getElementById("imagePreview");
+        preview.innerHTML = currentImages
+          .map(
+            (url, index) => `
+                <div class="image-item">
+                    <img src="${url}" alt="Preview">
+                    <button type="button" class="remove-image" onclick="removeImage(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function removeImage(index) {
+        currentImages.splice(index, 1);
+        updateImagePreview();
+      }
+
+      document
+        .getElementById("editForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          try {
+            const formData = new FormData(e.target);
+            const data = {
+              name: formData.get("name"),
+              address: formData.get("address"),
+              district: formData.get("district"),
+              description: formData.get("description"),
+              facilities: {
+                numBedrooms: parseInt(formData.get("numBedrooms")),
+                bathroom: {
+                  hasPrivateToilet: formData.get("bathroom") === "private",
+                },
+                amenities: formData.getAll("amenities"),
+                vehicles: formData.getAll("vehicles"),
+              },
+              images: currentImages,
+            };
+
+            const token = Auth.getToken();
+            const response = await fetch(`/api/properties/${propertyId}`, {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+              throw new Error(result.message);
+            }
+
+            alert("Cập nhật tin đăng thành công!");
+            window.location.href = "my-properties.html";
+          } catch (error) {
+            console.error("Update error:", error);
+            alert("Có lỗi xảy ra khi cập nhật tin đăng");
+          }
+        });
+
+      function showLoading(show) {
+        const loadingElement = document.getElementById("loadingIndicator");
+        if (!loadingElement) {
+          const form = document.getElementById("editForm");
+          const loadingDiv = document.createElement("div");
+          loadingDiv.id = "loadingIndicator";
+          loadingDiv.style.position = "absolute";
+          loadingDiv.style.top = "0";
+          loadingDiv.style.left = "0";
+          loadingDiv.style.right = "0";
+          loadingDiv.style.bottom = "0";
+          loadingDiv.style.background = "rgba(255,255,255,0.8)";
+          loadingDiv.style.display = "flex";
+          loadingDiv.style.alignItems = "center";
+          loadingDiv.style.justifyContent = "center";
+          loadingDiv.innerHTML = `
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                        <p class="mt-2">Đang tải thông tin tin đăng...</p>
+                    </div>
+                `;
+          form.style.position = "relative";
+          form.appendChild(loadingDiv);
+        } else {
+          loadingElement.style.display = show ? "flex" : "none";
+        }
+      }
+
+      function showError(message) {
+        const container = document.querySelector(".post-form-container");
+        container.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    ${message}
+                </div>
+                <button onclick="history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </button>
+            `;
+      }
+
+      function updateAuthButtons() {
+        const user = Auth.getUser();
+        const authButtons = document.getElementById("authButtons");
+
+        if (user) {
+          authButtons.innerHTML = `
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> ${user.name}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            ${
+                              user.role === "admin"
+                                ? '<li><a class="dropdown-item" href="admin.html">Quản lý</a></li>'
+                                : ""
+                            }
+                            ${
+                              user.role === "owner"
+                                ? '<li><a class="dropdown-item" href="my-properties.html">Tin đã đăng</a></li>'
+                                : ""
+                            }
+                            
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="Auth.logout()">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                `;
+        } else {
+          authButtons.innerHTML = `
+                    <a href="login.html" class="btn btn-outline-primary me-2">Đăng nhập</a>
+                    <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                `;
+        }
+      }
+
+      function getStatusText(status) {
+        switch (status.toLowerCase()) {
+          case "pending":
+            return "Chờ duyệt";
+          case "approved":
+            return "Đã duyệt";
+          case "rejected":
+            return "Từ chối";
+          default:
+            return status;
+        }
+      }
+    </script>
+  </body>
+</html>
