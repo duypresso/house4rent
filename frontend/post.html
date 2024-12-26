@@ -54,6 +54,42 @@
             border-radius: 4px;
             margin-bottom: 5px;
         }
+        .utility-cost-item {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 3fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .deposit-options {
+            display: flex;
+            gap: 20px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .deposit-input {
+            margin-top: 10px;
+        }
+        .add-utility-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .remove-utility {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
     </style>
     <script src="js/auth.js"></script>
 </head>
@@ -90,8 +126,8 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="district">Quận *</label>
-                            <select id="district" name="district" required>
-                                <option value="">Chọn quận</option>
+                            <select class="form-control" id="district" name="district" required>
+                                <option value="">Chọn Quận/Huyện</option>
                                 <option value="Quận 1">Quận 1</option>
                                 <option value="Quận 2">Quận 2</option>
                                 <option value="Quận 3">Quận 3</option>
@@ -106,12 +142,16 @@
                                 <option value="Quận 12">Quận 12</option>
                                 <option value="Quận Bình Tân">Quận Bình Tân</option>
                                 <option value="Quận Bình Thạnh">Quận Bình Thạnh</option>
-                                <option value="Quận Củ Chi">Quận Củ Chi</option>
                                 <option value="Quận Gò Vấp">Quận Gò Vấp</option>
                                 <option value="Quận Phú Nhuận">Quận Phú Nhuận</option>
                                 <option value="Quận Tân Bình">Quận Tân Bình</option>
                                 <option value="Quận Tân Phú">Quận Tân Phú</option>
-                                <option value="Quận Thủ Đức">Quận Thủ Đức</option>
+                                <option value="Thành phố Thủ Đức">Thành phố Thủ Đức</option>
+                                <option value="Huyện Bình Chánh">Huyện Bình Chánh</option>
+                                <option value="Huyện Cần Giờ">Huyện Cần Giờ</option>
+                                <option value="Huyện Củ Chi">Huyện Củ Chi</option>
+                                <option value="Huyện Hóc Môn">Huyện Hóc Môn</option>
+                                <option value="Huyện Nhà Bè">Huyện Nhà Bè</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -148,15 +188,15 @@
                 <div class="form-section">
                     <h2>Tiện ích</h2>
                     <div class="form-group">
-                        <label>Phương tiện di chuyển được phép</label>
+                        <label>Nội dung được phép</label>
                         <div class="checkbox-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" name="acceptableVehicles" value="xe_may">
                                 Xe máy
                             </label>
                             <label class="checkbox-label">
-                                <input type="checkbox" name="acceptableVehicles" value="xe_dap">
-                                Xe đạp
+                                <input type="checkbox" name="acceptableVehicles" value="thu_cung">
+                                Thú cưng
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="acceptableVehicles" value="o_to">
@@ -213,33 +253,81 @@
                 <!-- Chi phí -->
                 <div class="form-section">
                     <h2>Chi phí & Điều khoản</h2>
+                    
+                    <!-- Chi phí cơ bản -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="monthlyRent">Giá thuê hàng tháng (VNĐ) *</label>
+                            <input type="number" id="monthlyRent" name="monthlyRent" required min="0" step="100000">
+                        </div>
+                        <div class="form-group">
+                            <label for="minStayMonths">Thời gian thuê tối thiểu (tháng)</label>
+                            <input type="number" id="minStayMonths" name="minStayMonths" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <!-- Tiền cọc -->
                     <div class="form-group">
-                        <label>Chi phí tiện ích</label>
+                        <label>Đặt cọc</label>
+                        <div class="deposit-options mb-3">
+                            <label class="radio-label">
+                                <input type="radio" name="depositType" value="no" checked> 
+                                Không yêu cầu đặt cọc
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="depositType" value="fixed"> 
+                                Số tiền cố định
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="depositType" value="months"> 
+                                Theo số tháng
+                            </label>
+                        </div>
+                        
+                        <div id="fixedDepositAmount" class="deposit-input" style="display: none;">
+                            <label for="depositAmount">Số tiền đặt cọc (VNĐ)</label>
+                            <input type="number" id="depositAmount" name="deposit.amount" min="0" step="100000">
+                        </div>
+                        
+                        <div id="monthsDepositAmount" class="deposit-input" style="display: none;">
+                            <label for="depositMonths">Số tháng đặt cọc</label>
+                            <input type="number" id="depositMonths" name="deposit.months" min="1" max="12">
+                        </div>
+                    </div>
+
+                    <!-- Chi phí dịch vụ -->
+                    <div class="form-group">
+                        <label>Chi phí dịch vụ</label>
                         <div id="utilityCosts">
                             <div class="utility-cost-item">
-                                <input type="text" name="utilityName[]" placeholder="Tên chi phí">
-                                <input type="number" name="utilityCost[]" placeholder="Giá (VNĐ)">
+                                <select name="utilityName[]" class="utility-select">
+                                    <option value="">Chọn loại phí</option>
+                                    <option value="Điện">Điện</option>
+                                    <option value="Nước">Nước</option>
+                                    <option value="Internet">Internet</option>
+                                    <option value="Rác">Rác</option>
+                                    <option value="Gửi xe">Gửi xe</option>
+                                    <option value="Dịch vụ">Dịch vụ</option>
+                                    <option value="Vệ sinh">Vệ sinh</option>
+                                    <option value="Phí quản lý">Phí quản lý</option>
+                                    <option value="Phí chung cư">Phí chung cư</option>
+                                    <option value="Bảo trì">Bảo trì</option>
+                                </select>
+                                <input type="number" name="utilityCost[]" placeholder="Giá (VNĐ)" min="0" step="1000">
+                                <select name="utilityUnit[]">
+                                    <option value="tháng">/ tháng</option>
+                                    <option value="kWh">/ kWh</option>
+                                    <option value="m3">/ m³</option>
+                                    <option value="người">/ người</option>
+                                    <option value="xe">/ xe</option>
+                                </select>
+                                <input type="text" name="utilityDescription[]" placeholder="Mô tả thêm (không bắt buộc)">
                                 <button type="button" class="remove-utility"><i class="fas fa-times"></i></button>
                             </div>
                         </div>
                         <button type="button" id="addUtility" class="add-utility-btn">
                             <i class="fas fa-plus"></i> Thêm chi phí
                         </button>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Đặt cọc</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="deposit.required" value="true">
-                                    Yêu cầu đặt cọc
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group deposit-amount" style="display: none;">
-                            <label for="depositAmount">Số tiền đặt cọc (VNĐ)</label>
-                            <input type="number" id="depositAmount" name="deposit.amount">
-                        </div>
                     </div>
                 </div>
 
@@ -303,7 +391,7 @@
         });
 
         function initFormHandlers() {
-            // Xử lý hi���n thị/ẩn số tiền đặt cọc
+            // Xử lý hiển thị/ẩn số tiền đặt cọc
             const depositRequiredCheckbox = document.querySelector('input[name="deposit.required"]');
             if (depositRequiredCheckbox) {
                 depositRequiredCheckbox.addEventListener('change', (e) => {
@@ -647,25 +735,49 @@
                     parseInt(depositAmountInput.value) : 0;
 
                 // Xử lý utilities một cách an toàn
-                const utilityItems = form.querySelectorAll('.utility-cost-item');
-                const utilities = Array.from(utilityItems || [])
+                const utilities = Array.from(document.querySelectorAll('.utility-cost-item'))
                     .map(item => {
-                        try {
-                            const nameInput = item.querySelector('input[name="utilityName[]"]');
-                            const costInput = item.querySelector('input[name="utilityCost[]"]');
-                            if (!nameInput || !costInput) return null;
-                            
-                            const name = nameInput.value?.trim();
-                            const costValue = costInput.value?.trim();
-                            const cost = costValue ? parseInt(costValue) : 0;
-                            
-                            return name ? { name, cost } : null;
-                        } catch (error) {
-                            console.error('Error processing utility item:', error);
-                            return null;
-                        }
+                        const nameSelect = item.querySelector('select[name="utilityName[]"]');
+                        const costInput = item.querySelector('input[name="utilityCost[]"]');
+                        const unitSelect = item.querySelector('select[name="utilityUnit[]"]');
+                        const descInput = item.querySelector('input[name="utilityDescription[]"]');
+
+                        if (!nameSelect?.value || !costInput?.value) return null;
+
+                        return {
+                            name: nameSelect.value,
+                            cost: parseInt(costInput.value),
+                            unit: unitSelect?.value || 'tháng',
+                            description: descInput?.value || ''
+                        };
                     })
                     .filter(util => util !== null);
+
+                // Trong hàm submitForm, cập nhật cách xử lý tiền cọc
+                const depositType = form.querySelector('input[name="depositType"]:checked')?.value;
+                let deposit = {
+                    amount: 0,
+                    months: 0
+                };
+
+                if (depositType === 'fixed') {
+                    const amount = parseInt(document.getElementById('depositAmount').value);
+                    if (amount > 0) {
+                        deposit = {
+                            amount: amount,
+                            months: 0
+                        };
+                    }
+                } else if (depositType === 'months') {
+                    const months = parseInt(document.getElementById('depositMonths').value);
+                    const monthlyRent = parseInt(document.getElementById('monthlyRent').value);
+                    if (months > 0 && monthlyRent > 0) {
+                        deposit = {
+                            amount: monthlyRent * months,
+                            months: months
+                        };
+                    }
+                }
 
                 // Tạo object dữ liệu
                 const propertyData = {
@@ -685,7 +797,8 @@
                     images: imageUrls,
                     facilities: {
                         numBedrooms: parseInt(requiredFields.numBedrooms),
-                        bathroom: bathroomFacilities
+                        bathroom: bathroomFacilities,
+                        utilityCosts: utilities
                     },
                     acceptableVehicles: Array.from(form.querySelectorAll('input[name="acceptableVehicles"]:checked') || [])
                         .map(cb => cb?.value)
@@ -693,12 +806,13 @@
                     inventory: Array.from(form.querySelectorAll('input[name="inventory"]:checked') || [])
                         .map(cb => cb?.value)
                         .filter(Boolean),
-                    deposit: {
-                        required: depositRequired,
-                        amount: depositAmount
-                    },
-                    utilities: utilities
+                    deposit: deposit,
+                    monthlyRent: parseInt(document.getElementById('monthlyRent').value) || 0,
+                    minStayMonths: parseInt(document.getElementById('minStayMonths').value) || 0,
                 };
+
+                // Xóa trường utilities trùng lặp
+                delete propertyData.utilities;
 
                 console.log('Property data being sent:', propertyData);
 
@@ -737,6 +851,36 @@
                 alert(error.message || 'Có lỗi xảy ra khi đăng tin');
             }
         }
+
+        // Xử lý hiển thị form đặt cọc
+        document.querySelectorAll('input[name="depositType"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.getElementById('fixedDepositAmount').style.display = 'none';
+                document.getElementById('monthsDepositAmount').style.display = 'none';
+                
+                if (e.target.value === 'fixed') {
+                    document.getElementById('fixedDepositAmount').style.display = 'block';
+                } else if (e.target.value === 'months') {
+                    document.getElementById('monthsDepositAmount').style.display = 'block';
+                }
+            });
+        });
+
+        // Xử lý thêm/xóa chi phí dịch vụ
+        document.getElementById('addUtility').addEventListener('click', () => {
+            const template = document.querySelector('.utility-cost-item').cloneNode(true);
+            template.querySelectorAll('input, select').forEach(input => input.value = '');
+            document.getElementById('utilityCosts').appendChild(template);
+        });
+
+        document.getElementById('utilityCosts').addEventListener('click', (e) => {
+            if (e.target.closest('.remove-utility')) {
+                const items = document.querySelectorAll('.utility-cost-item');
+                if (items.length > 1) {
+                    e.target.closest('.utility-cost-item').remove();
+                }
+            }
+        });
     </script>
 </body>
 </html> 

@@ -175,16 +175,22 @@ exports.getApprovedProperties = async (req, res) => {
 
 exports.createProperty = async (req, res) => {
     try {
-        // Tạo property mới
         const propertyData = {
             ...req.body,
             owner: req.user._id,
-            status: 'pending'
+            status: 'pending',
+            // Đảm bảo các trường số được parse đúng
+            monthlyRent: parseInt(req.body.monthlyRent) || 0,
+            minStayMonths: parseInt(req.body.minStayMonths) || 0,
+            deposit: {
+                amount: parseInt(req.body.deposit?.amount) || 0,
+                months: parseInt(req.body.deposit?.months) || 0
+            }
         };
-
-        const property = new Property(propertyData);
-        await property.save();
-
+        
+        console.log('Creating property with data:', propertyData);
+        
+        const property = await Property.create(propertyData);
         res.status(201).json({
             success: true,
             message: 'Đăng tin thành công, đang chờ phê duyệt',
@@ -194,8 +200,7 @@ exports.createProperty = async (req, res) => {
         console.error('Create property error:', error);
         res.status(400).json({
             success: false,
-            message: 'Có lỗi xảy ra khi đăng tin',
-            error: error.message
+            message: error.message || 'Có lỗi xảy ra khi đăng tin'
         });
     }
 };
@@ -298,7 +303,7 @@ exports.getPropertyDetail = async (req, res) => {
         if (!property) {
             return res.status(404).json({
                 success: false,
-                message: 'Không tìm thấy bài đăng hoặc bài đăng chưa đư���c phê duyệt'
+                message: 'Không tìm thấy bài đăng hoặc bài đăng chưa được phê duyệt'
             });
         }
 
@@ -312,6 +317,33 @@ exports.getPropertyDetail = async (req, res) => {
             success: false,
             message: 'Lỗi khi lấy thông tin bài đăng',
             error: error.message
+        });
+    }
+};
+
+exports.getProperty = async (req, res) => {
+    try {
+        const property = await Property.findById(req.params.id)
+            .populate('owner', 'name phone email');
+            
+        console.log('Retrieved property:', property);
+        
+        if (!property) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy bài đăng'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: property
+        });
+    } catch (error) {
+        console.error('Get property error:', error);
+        res.status(400).json({
+            success: false,
+            message: error.message
         });
     }
 }; 
