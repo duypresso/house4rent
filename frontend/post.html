@@ -225,6 +225,32 @@
                             </label>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label>Thiết bị gia dụng lớn</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="majorAppliances" value="tu_lanh">
+                                Tủ lạnh
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="majorAppliances" value="bep">
+                                Bếp
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="majorAppliances" value="bon_rua">
+                                Bồn rửa
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Điều hòa không khí</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="airConditioning" value="true">
+                                Có
+                            </label>
+                        </div>
+                    </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="numBedrooms">Số phòng ngủ *</label>
@@ -328,6 +354,22 @@
                         <button type="button" id="addUtility" class="add-utility-btn">
                             <i class="fas fa-plus"></i> Thêm chi phí
                         </button>
+                    </div>
+                </div>
+
+                <!-- Đánh giá -->
+                <div class="form-section">
+                    <h2>Đánh giá</h2>
+                    <div class="form-group">
+                        <label for="rating">Đánh giá của bạn (1-5 sao) *</label>
+                        <select id="rating" name="rating" required>
+                            <option value="">Chọn đánh giá</option>
+                            <option value="1">1 sao</option>
+                            <option value="2">2 sao</option>
+                            <option value="3">3 sao</option>
+                            <option value="4">4 sao</option>
+                            <option value="5">5 sao</option>
+                        </select>
                     </div>
                 </div>
 
@@ -622,7 +664,7 @@
                 // Xử lý thông tin phường
                 const ward = result.address.neighbourhood || result.address.quarter || '';
                 if (ward) {
-                    wardField.value = ward.replace(/^(Phường|Ward)\s*/i, 'Phường ');
+                    wardField.value = 'Phường ' + ward.replace(/^(Phường|Ward)\s*/i, '');
                 }
             }
 
@@ -673,7 +715,8 @@
                     ward: requiredElements.ward.value,
                     description: requiredElements.description.value,
                     contactPhone: requiredElements.contactPhone.value,
-                    numBedrooms: requiredElements.numBedrooms.value
+                    numBedrooms: requiredElements.numBedrooms.value,
+                    rating: form.querySelector('select[name="rating"]').value
                 };
 
                 // Kiểm tra các trường bắt buộc
@@ -798,17 +841,22 @@
                     facilities: {
                         numBedrooms: parseInt(requiredFields.numBedrooms),
                         bathroom: bathroomFacilities,
-                        utilityCosts: utilities
+                        utilityCosts: utilities,
+                        inventory: Array.from(form.querySelectorAll('input[name="inventory"]:checked') || [])
+                            .map(cb => cb?.value)
+                            .filter(Boolean),
+                        majorAppliances: Array.from(form.querySelectorAll('input[name="majorAppliances"]:checked') || [])
+                            .map(cb => cb?.value)
+                            .filter(Boolean),
+                        airConditioning: form.querySelector('input[name="airConditioning"]:checked')?.value || false
                     },
                     acceptableVehicles: Array.from(form.querySelectorAll('input[name="acceptableVehicles"]:checked') || [])
-                        .map(cb => cb?.value)
-                        .filter(Boolean),
-                    inventory: Array.from(form.querySelectorAll('input[name="inventory"]:checked') || [])
                         .map(cb => cb?.value)
                         .filter(Boolean),
                     deposit: deposit,
                     monthlyRent: parseInt(document.getElementById('monthlyRent').value) || 0,
                     minStayMonths: parseInt(document.getElementById('minStayMonths').value) || 0,
+                    rating: parseInt(requiredFields.rating)
                 };
 
                 // Xóa trường utilities trùng lặp
@@ -883,4 +931,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

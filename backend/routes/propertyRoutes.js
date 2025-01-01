@@ -3,6 +3,7 @@ const router = express.Router();
 const propertyController = require('../controllers/propertyController');
 const { protect, restrictTo } = require('../middleware/auth');
 const Property = require('../models/Property');
+const Rating = require('../models/Rating');
 
 // Public routes
 router.get('/approved', propertyController.getApprovedProperties);
@@ -140,8 +141,30 @@ router.put('/:id', protect, restrictTo('owner'), async (req, res) => {
     }
 });
 
+// Route to create a new property
+router.post('/properties', protect, restrictTo('owner', 'admin'), async (req, res) => {
+    try {
+        const propertyData = req.body;
+        const newProperty = new Property(propertyData);
+        await newProperty.save();
+
+        // Save rating to the ratings collection
+        const ratingData = {
+            propertyId: newProperty._id,
+            rating: propertyData.rating,
+            userId: req.user.id
+        };
+        const newRating = new Rating(ratingData);
+        await newRating.save();
+
+        res.status(201).json({ success: true, property: newProperty });
+    } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+});
+
 // Các routes khác
 router.delete('/:id', protect, restrictTo('owner', 'admin'), propertyController.deleteProperty);
 router.get('/:id', propertyController.getPropertyDetail);
 
-module.exports = router; 
+module.exports = router;

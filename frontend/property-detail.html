@@ -189,6 +189,15 @@
                   <li class="mb-2" id="closeTime">
                     <i class="fas fa-clock"></i> Loading...
                   </li>
+                  <li class="mb-2" id="propertyRating">
+                    <i class="fas fa-star"></i> Loading...
+                  </li>
+                  <li class="mb-2" id="latitude">
+                    <i class="fas fa-map-marker-alt"></i> Latitude: Loading...
+                  </li>
+                  <li class="mb-2" id="longitude">
+                    <i class="fas fa-map-marker-alt"></i> Longitude: Loading...
+                  </li>
                 </ul>
               </div>
               <div class="col-md-6">
@@ -376,7 +385,7 @@
         // Update basic info
         document.getElementById("propertyName").textContent = property.name;
         document.getElementById("propertyAddress").innerHTML = `
-                <i class="fas fa-map-marker-alt"></i> ${property.address}
+                <i class="fas fa-map-marker-alt"></i> ${property.address}, Phường ${property.ward}, ${property.district}
             `;
         document.getElementById("propertyDescription").textContent =
           property.description;
@@ -394,6 +403,15 @@
                 <i class="fas fa-clock"></i> Giờ đóng cửa: ${
                   property.closeTime || "Không giới hạn"
                 }
+            `;
+        document.getElementById("propertyRating").innerHTML = `
+                <i class="fas fa-star"></i> Đánh giá: ${property.rating} sao
+            `;
+        document.getElementById("latitude").innerHTML = `
+                <i class="fas fa-map-marker-alt"></i> Latitude: ${property.latitude}
+            `;
+        document.getElementById("longitude").innerHTML = `
+                <i class="fas fa-map-marker-alt"></i> Longitude: ${property.longitude}
             `;
 
         // Update images
@@ -632,7 +650,7 @@
         }).addTo(map);
 
         // Tạo marker cho vị trí phòng trọ
-        marker = L.marker([latitude, longitude])
+        marker = L.marker([latitude, longitude], { draggable: true })
           .addTo(map)
           .bindPopup(
             `
@@ -643,6 +661,17 @@
                 `
           )
           .openPopup();
+
+        // Cập nhật latitude và longitude khi marker được kéo
+        marker.on('dragend', function(e) {
+          const position = marker.getLatLng();
+          document.getElementById('latitude').innerHTML = `
+            <i class="fas fa-map-marker-alt"></i> Latitude: ${position.lat}
+          `;
+          document.getElementById('longitude').innerHTML = `
+            <i class="fas fa-map-marker-alt"></i> Longitude: ${position.lng}
+          `;
+        });
 
         // Thêm các địa điểm xung quanh
         addNearbyPlaces(map, latitude, longitude);
