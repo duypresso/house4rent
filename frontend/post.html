@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -884,3 +885,939 @@
     </script>
 </body>
 </html> 
+=======
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng tin - NhàSinhViên</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .geocoder-results {
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .geocoder-results.show {
+            display: block;
+        }
+        .geocoder-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .geocoder-result-item:hover {
+            background-color: #f8f9fa;
+        }
+        .geocoder-result-item:last-child {
+            border-bottom: none;
+        }
+        .map-search-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        #addressSearch {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        .utility-cost-item {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 3fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .deposit-options {
+            display: flex;
+            gap: 20px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .deposit-input {
+            margin-top: 10px;
+        }
+        .add-utility-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .remove-utility {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="js/auth.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="index.html">NhàSinhViên</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="search.html">Tìm phòng</a></li>
+                <li><a href="post.html" class="active">Đăng tin</a></li>
+                <li><a href="contact.html">Liên hệ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="post-container">
+        <div class="post-form-wrapper">
+            <h1>Đăng tin cho thuê</h1>
+            <p class="form-description">Vui lòng điền đầy đủ thông tin để đăng tin</p>
+
+            <form id="postForm" class="post-form">
+                <!-- Thông tin cơ bản -->
+                <div class="form-section">
+                    <h2>Thông tin cơ bản</h2>
+                    <div class="form-group">
+                        <label for="name">Tiêu đề bài đăng *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chỉ chi tiết *</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="district">Quận *</label>
+                            <select class="form-control" id="district" name="district" required>
+                                <option value="">Chọn Quận/Huyện</option>
+                                <option value="Quận 1">Quận 1</option>
+                                <option value="Quận 2">Quận 2</option>
+                                <option value="Quận 3">Quận 3</option>
+                                <option value="Quận 4">Quận 4</option>
+                                <option value="Quận 5">Quận 5</option>
+                                <option value="Quận 6">Quận 6</option>
+                                <option value="Quận 7">Quận 7</option>
+                                <option value="Quận 8">Quận 8</option>
+                                <option value="Quận 9">Quận 9</option>
+                                <option value="Quận 10">Quận 10</option>
+                                <option value="Quận 11">Quận 11</option>
+                                <option value="Quận 12">Quận 12</option>
+                                <option value="Quận Bình Tân">Quận Bình Tân</option>
+                                <option value="Quận Bình Thạnh">Quận Bình Thạnh</option>
+                                <option value="Quận Gò Vấp">Quận Gò Vấp</option>
+                                <option value="Quận Phú Nhuận">Quận Phú Nhuận</option>
+                                <option value="Quận Tân Bình">Quận Tân Bình</option>
+                                <option value="Quận Tân Phú">Quận Tân Phú</option>
+                                <option value="Thành phố Thủ Đức">Thành phố Thủ Đức</option>
+                                <option value="Huyện Bình Chánh">Huyện Bình Chánh</option>
+                                <option value="Huyện Cần Giờ">Huyện Cần Giờ</option>
+                                <option value="Huyện Củ Chi">Huyện Củ Chi</option>
+                                <option value="Huyện Hóc Môn">Huyện Hóc Môn</option>
+                                <option value="Huyện Nhà Bè">Huyện Nhà Bè</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ward">Phường *</label>
+                            <input type="text" id="ward" name="ward" required placeholder="Nhập tên phường">
+                        </div>
+                    </div>
+                    <!-- Location Map -->
+                    <div class="form-group">
+                        <div id="map"></div>
+                    </div>
+                </div>
+
+                <!-- Thông tin chi tiết -->
+                <div class="form-section">
+                    <h2>Thông tin chi tiết</h2>
+                    <div class="form-group">
+                        <label for="description">Mô tả chi tiết *</label>
+                        <textarea id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactPhone">Số điện thoại liên hệ *</label>
+                            <input type="tel" id="contactPhone" name="contactPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="closeTime">Giờ đóng cửa</label>
+                            <input type="time" id="closeTime" name="closeTime">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tiện ích -->
+                <div class="form-section">
+                    <h2>Tiện ích</h2>
+                    <div class="form-group">
+                        <label>Nội dung được phép</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="acceptableVehicles" value="xe_may">
+                                Xe máy
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="acceptableVehicles" value="thu_cung">
+                                Thú cưng
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="acceptableVehicles" value="o_to">
+                                Ô tô
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nội thất có sẵn</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="inventory" value="giuong">
+                                Giường
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="inventory" value="tu">
+                                Tủ
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="inventory" value="ban_ghe">
+                                Bàn ghế
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="inventory" value="dieu_hoa">
+                                Điều hòa
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Thiết bị gia dụng lớn</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="majorAppliances" value="tu_lanh">
+                                Tủ lạnh
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="majorAppliances" value="bep">
+                                Bếp
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="majorAppliances" value="bon_rua">
+                                Bồn rửa
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Điều hòa không khí</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="airConditioning" value="true">
+                                Có
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="numBedrooms">Số phòng ngủ *</label>
+                            <input type="number" id="numBedrooms" name="numBedrooms" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tiện ích phòng tắm</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="bathroom.hasShower" value="true">
+                                    Vòi sen
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="bathroom.hasBathtub" value="true">
+                                    Bồn tắm
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="bathroom.hasPrivateToilet" value="true">
+                                    Toilet riêng
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chi phí -->
+                <div class="form-section">
+                    <h2>Chi phí & Điều khoản</h2>
+                    
+                    <!-- Chi phí cơ bản -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="monthlyRent">Giá thuê hàng tháng (VNĐ) *</label>
+                            <input type="number" id="monthlyRent" name="monthlyRent" required min="0" step="100000">
+                        </div>
+                        <div class="form-group">
+                            <label for="minStayMonths">Thời gian thuê tối thiểu (tháng)</label>
+                            <input type="number" id="minStayMonths" name="minStayMonths" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <!-- Tiền cọc -->
+                    <div class="form-group">
+                        <label>Đặt cọc</label>
+                        <div class="deposit-options mb-3">
+                            <label class="radio-label">
+                                <input type="radio" name="depositType" value="no" checked> 
+                                Không yêu cầu đặt cọc
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="depositType" value="fixed"> 
+                                Số tiền cố định
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="depositType" value="months"> 
+                                Theo số tháng
+                            </label>
+                        </div>
+                        
+                        <div id="fixedDepositAmount" class="deposit-input" style="display: none;">
+                            <label for="depositAmount">Số tiền đặt cọc (VNĐ)</label>
+                            <input type="number" id="depositAmount" name="deposit.amount" min="0" step="100000">
+                        </div>
+                        
+                        <div id="monthsDepositAmount" class="deposit-input" style="display: none;">
+                            <label for="depositMonths">Số tháng đặt cọc</label>
+                            <input type="number" id="depositMonths" name="deposit.months" min="1" max="12">
+                        </div>
+                    </div>
+
+                    <!-- Chi phí dịch vụ -->
+                    <div class="form-group">
+                        <label>Chi phí dịch vụ</label>
+                        <div id="utilityCosts">
+                            <div class="utility-cost-item">
+                                <select name="utilityName[]" class="utility-select">
+                                    <option value="">Chọn loại phí</option>
+                                    <option value="Điện">Điện</option>
+                                    <option value="Nước">Nước</option>
+                                    <option value="Internet">Internet</option>
+                                    <option value="Rác">Rác</option>
+                                    <option value="Gửi xe">Gửi xe</option>
+                                    <option value="Dịch vụ">Dịch vụ</option>
+                                    <option value="Vệ sinh">Vệ sinh</option>
+                                    <option value="Phí quản lý">Phí quản lý</option>
+                                    <option value="Phí chung cư">Phí chung cư</option>
+                                    <option value="Bảo trì">Bảo trì</option>
+                                </select>
+                                <input type="number" name="utilityCost[]" placeholder="Giá (VNĐ)" min="0" step="1000">
+                                <select name="utilityUnit[]">
+                                    <option value="tháng">/ tháng</option>
+                                    <option value="kWh">/ kWh</option>
+                                    <option value="m3">/ m³</option>
+                                    <option value="người">/ người</option>
+                                    <option value="xe">/ xe</option>
+                                </select>
+                                <input type="text" name="utilityDescription[]" placeholder="Mô tả thêm (không bắt buộc)">
+                                <button type="button" class="remove-utility"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" id="addUtility" class="add-utility-btn">
+                            <i class="fas fa-plus"></i> Thêm chi phí
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Đánh giá -->
+                <div class="form-section">
+                    <h2>Đánh giá</h2>
+                    <div class="form-group">
+                        <label for="rating">Đánh giá của bạn (1-5 sao) *</label>
+                        <select id="rating" name="rating" required>
+                            <option value="">Chọn đánh giá</option>
+                            <option value="1">1 sao</option>
+                            <option value="2">2 sao</option>
+                            <option value="3">3 sao</option>
+                            <option value="4">4 sao</option>
+                            <option value="5">5 sao</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Hình ảnh -->
+                <div class="form-section">
+                    <h2>Hình ảnh</h2>
+                    <div class="form-group">
+                        <label>Tải lên hình ảnh phòng trọ (tối đa 5 ảnh)</label>
+                        <div class="image-upload-container">
+                            <div class="image-upload-wrapper">
+                                <input type="file" id="imageUpload" accept="image/*" multiple>
+                                <div class="upload-placeholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Kéo thả hoặc click để tải ảnh lên</p>
+                                </div>
+                            </div>
+                            <div id="imagePreview" class="image-preview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Đăng tin
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        // Khởi tạo bản đồ khi trang được tải
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Kiểm tra đăng nhập
+                const isAuthenticated = await Auth.checkAuthStatus();
+                if (!isAuthenticated) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                const user = Auth.getUser();
+                if (user.role !== 'owner') {
+                    alert('Bạn không có quyền đăng tin!');
+                    window.location.href = '/index.html';
+                    return;
+                }
+
+                // Khởi tạo bản đồ
+                initMap();
+
+                // Khởi tạo form và các event listeners
+                initFormHandlers();
+            } catch (error) {
+                console.error('Initialization error:', error);
+                window.location.href = '/login.html';
+            }
+        });
+
+        function initFormHandlers() {
+            // Xử lý hiển thị/ẩn số tiền đặt cọc
+            const depositRequiredCheckbox = document.querySelector('input[name="deposit.required"]');
+            if (depositRequiredCheckbox) {
+                depositRequiredCheckbox.addEventListener('change', (e) => {
+                    const depositAmount = document.querySelector('.deposit-amount');
+                    if (depositAmount) {
+                        depositAmount.style.display = e.target.checked ? 'block' : 'none';
+                    }
+                });
+            }
+
+            // Xử lý thêm/xóa chi phí tiện ích
+            const addUtilityBtn = document.getElementById('addUtility');
+            if (addUtilityBtn) {
+                addUtilityBtn.addEventListener('click', () => {
+                    const container = document.getElementById('utilityCosts');
+                    if (container) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'utility-cost-item';
+                        newItem.innerHTML = `
+                            <input type="text" name="utilityName[]" placeholder="Tên chi phí">
+                            <input type="number" name="utilityCost[]" placeholder="Giá (VNĐ)">
+                            <button type="button" class="remove-utility"><i class="fas fa-times"></i></button>
+                        `;
+                        container.appendChild(newItem);
+                    }
+                });
+            }
+
+            const utilityCostsContainer = document.getElementById('utilityCosts');
+            if (utilityCostsContainer) {
+                utilityCostsContainer.addEventListener('click', (e) => {
+                    if (e.target.closest('.remove-utility')) {
+                        e.target.closest('.utility-cost-item').remove();
+                    }
+                });
+            }
+
+            // Xử lý preview ảnh
+            const imageUpload = document.getElementById('imageUpload');
+            if (imageUpload) {
+                imageUpload.addEventListener('change', function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    if (!preview) return;
+
+                    preview.innerHTML = '';
+                    const files = Array.from(e.target.files || []);
+                    
+                    if (files.length > 5) {
+                        alert('Chỉ được chọn tối đa 5 ảnh!');
+                        this.value = '';
+                        return;
+                    }
+
+                    files.forEach(file => {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const div = document.createElement('div');
+                                div.className = 'preview-item';
+                                div.innerHTML = `
+                                    <img src="${e.target.result}" alt="Preview">
+                                    <button type="button" class="remove-image"><i class="fas fa-times"></i></button>
+                                `;
+                                preview.appendChild(div);
+                            }
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                });
+            }
+
+            const imagePreview = document.getElementById('imagePreview');
+            if (imagePreview) {
+                imagePreview.addEventListener('click', (e) => {
+                    if (e.target.closest('.remove-image')) {
+                        const previewItem = e.target.closest('.preview-item');
+                        if (previewItem) {
+                            previewItem.remove();
+                            
+                            // Reset file input nếu không còn ảnh preview
+                            const preview = document.getElementById('imagePreview');
+                            const imageUpload = document.getElementById('imageUpload');
+                            if (preview && imageUpload && preview.children.length === 0) {
+                                imageUpload.value = '';
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Thêm event listener cho form submit
+            const postForm = document.getElementById('postForm');
+            if (postForm) {
+                postForm.addEventListener('submit', submitForm);
+            }
+        }
+
+        let map;
+        let marker;
+        let selectedLocation = null;
+
+        // Khởi tạo bản đồ
+        function initMap() {
+            // Tọa độ mặc định (trung tâm TP.HCM)
+            const defaultLocation = [10.7769, 106.7009];
+
+            // Tạo bản đồ
+            map = L.map('map').setView(defaultLocation, 13);
+
+            // Thêm layer bản đồ
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Thêm control tìm kiếm vào bản đồ
+            const searchControl = L.Control.geocoder({
+                defaultMarkGeocode: false,
+                position: 'topleft',
+                placeholder: 'Tìm kiếm địa chỉ...',
+                geocoder: L.Control.Geocoder.nominatim({
+                    geocodingQueryParams: {
+                        countrycodes: 'vn',
+                        viewbox: '106.6297,10.6958,106.8413,10.8765', // Giới hạn trong TPHCM
+                        bounded: 1,
+                        addressdetails: 1
+                    }
+                })
+            }).on('markgeocode', function(e) {
+                const result = e.geocode;
+                const latlng = result.center;
+                
+                // Cập nhật marker
+                marker.setLatLng(latlng);
+                selectedLocation = {
+                    lat: latlng.lat,
+                    lng: latlng.lng
+                };
+                
+                // Zoom đến vị trí
+                map.setView(latlng, 16);
+                
+                // Cập nhật thông tin địa chỉ
+                updateAddressFromResult(result);
+            }).addTo(map);
+
+            // Tạo marker mặc định
+            marker = L.marker(defaultLocation, {
+                draggable: true
+            }).addTo(map);
+
+            // Xử lý sự kiện khi marker được kéo
+            marker.on('dragend', async function(e) {
+                const position = marker.getLatLng();
+                selectedLocation = {
+                    lat: position.lat,
+                    lng: position.lng
+                };
+                
+                // Reverse geocoding khi marker được kéo
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.lat}&lon=${position.lng}&addressdetails=1`);
+                    const result = await response.json();
+                    if (result) {
+                        updateAddressFromResult(result);
+                    }
+                } catch (error) {
+                    console.error('Reverse geocoding error:', error);
+                }
+            });
+
+            // Xử lý sự kiện click trên bản đồ
+            map.on('click', async function(e) {
+                const latlng = e.latlng;
+                marker.setLatLng(latlng);
+                selectedLocation = {
+                    lat: latlng.lat,
+                    lng: latlng.lng
+                };
+                
+                // Reverse geocoding khi click trên bản đồ
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&addressdetails=1`);
+                    const result = await response.json();
+                    if (result) {
+                        updateAddressFromResult(result);
+                    }
+                } catch (error) {
+                    console.error('Reverse geocoding error:', error);
+                }
+            });
+        }
+
+        // Hàm cập nhật thông tin địa chỉ từ kết quả geocoding
+        function updateAddressFromResult(result) {
+            const addressField = document.getElementById('address');
+            const districtField = document.getElementById('district');
+            const wardField = document.getElementById('ward');
+
+            // Kiểm tra các trường có tồn tại không
+            if (!addressField || !districtField || !wardField) {
+                console.error('One or more required fields are missing');
+                return;
+            }
+
+            // Cập nhật địa chỉ đầy đủ
+            if (result.display_name) {
+                addressField.value = result.display_name;
+            }
+
+            // Xử lý thông tin quận
+            if (result.address) {
+                let district = result.address.suburb || result.address.district || '';
+                if (district) {
+                    // Chuẩn hóa tên quận
+                    district = district.replace(/^(Quận|District)\s*/i, 'Quận ');
+                    const districtOption = Array.from(districtField.options || [])
+                        .find(option => {
+                            if (!option || !option.text) return false;
+                            const optionText = option.text.toLowerCase();
+                            const searchText = district.toLowerCase();
+                            return optionText.includes(searchText) || searchText.includes(optionText);
+                        });
+                    if (districtOption) {
+                        districtField.value = districtOption.value;
+                    }
+                }
+
+                // Xử lý thông tin phường
+                const ward = result.address.neighbourhood || result.address.quarter || '';
+                if (ward) {
+                    wardField.value = 'Phường ' + ward.replace(/^(Phường|Ward)\s*/i, '');
+                }
+            }
+
+            // Cập nhật vị trí đã chọn
+            if (result.lat || result.center?.lat) {
+                selectedLocation = {
+                    lat: parseFloat(result.lat) || parseFloat(result.center?.lat),
+                    lng: parseFloat(result.lon) || parseFloat(result.center?.lng)
+                };
+            }
+        }
+
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            try {
+                const form = event.target;
+                if (!form) {
+                    throw new Error('Form not found');
+                }
+
+                // Kiểm tra tất cả các trường input trước
+                const requiredElements = {
+                    name: document.getElementById('name'),
+                    address: document.getElementById('address'),
+                    district: document.getElementById('district'),
+                    ward: document.getElementById('ward'),
+                    description: document.getElementById('description'),
+                    contactPhone: document.getElementById('contactPhone'),
+                    numBedrooms: document.getElementById('numBedrooms'),
+                    imageUpload: document.getElementById('imageUpload')
+                };
+
+                // Kiểm tra xem có element nào bị thiếu không
+                for (const [fieldName, element] of Object.entries(requiredElements)) {
+                    if (!element) {
+                        throw new Error(`Không tìm thấy trường ${fieldName}`);
+                    }
+                }
+
+                const formData = new FormData(form);
+
+                // Kiểm tra dữ liệu bắt buộc
+                const requiredFields = {
+                    name: requiredElements.name.value,
+                    address: requiredElements.address.value,
+                    district: requiredElements.district.value,
+                    ward: requiredElements.ward.value,
+                    description: requiredElements.description.value,
+                    contactPhone: requiredElements.contactPhone.value,
+                    numBedrooms: requiredElements.numBedrooms.value,
+                    rating: form.querySelector('select[name="rating"]').value
+                };
+
+                // Kiểm tra các trường bắt buộc
+                for (const [field, value] of Object.entries(requiredFields)) {
+                    if (!value || value.trim() === '') {
+                        alert(`Vui lòng điền đầy đủ thông tin ${field}`);
+                        return;
+                    }
+                }
+
+                if (!selectedLocation || !selectedLocation.lat || !selectedLocation.lng) {
+                    alert('Vui lòng chọn vị trí trên bản đồ');
+                    return;
+                }
+
+                const images = requiredElements.imageUpload.files || [];
+
+                // Upload ảnh lên Cloudinary
+                const imageUrls = [];
+                for (let i = 0; i < images.length; i++) {
+                    try {
+                        const imageData = new FormData();
+                        imageData.append('file', images[i]);
+                        imageData.append('upload_preset', 'xvo2f3vf');
+                        
+                        const response = await fetch('https://api.cloudinary.com/v1_1/dspjslyw6/image/upload', {
+                            method: 'POST',
+                            body: imageData
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error('Upload ảnh thất bại');
+                        }
+
+                        const data = await response.json();
+                        if (!data.secure_url) {
+                            throw new Error('Không nhận được URL ảnh từ server');
+                        }
+                        imageUrls.push(data.secure_url);
+                    } catch (error) {
+                        console.error('Image upload error:', error);
+                        throw new Error('Lỗi khi tải ảnh lên: ' + error.message);
+                    }
+                }
+
+                // Lấy giá trị từ các checkbox một cách an toàn
+                const bathroomFacilities = {
+                    hasShower: form.querySelector('input[name="bathroom.hasShower"]')?.checked || false,
+                    hasBathtub: form.querySelector('input[name="bathroom.hasBathtub"]')?.checked || false,
+                    hasPrivateToilet: form.querySelector('input[name="bathroom.hasPrivateToilet"]')?.checked || false
+                };
+
+                // Kiểm tra deposit fields
+                const depositRequiredInput = form.querySelector('input[name="deposit.required"]');
+                const depositAmountInput = document.getElementById('depositAmount');
+                
+                const depositRequired = depositRequiredInput ? depositRequiredInput.checked : false;
+                const depositAmount = (depositRequired && depositAmountInput && depositAmountInput.value) ? 
+                    parseInt(depositAmountInput.value) : 0;
+
+                // Xử lý utilities một cách an toàn
+                const utilities = Array.from(document.querySelectorAll('.utility-cost-item'))
+                    .map(item => {
+                        const nameSelect = item.querySelector('select[name="utilityName[]"]');
+                        const costInput = item.querySelector('input[name="utilityCost[]"]');
+                        const unitSelect = item.querySelector('select[name="utilityUnit[]"]');
+                        const descInput = item.querySelector('input[name="utilityDescription[]"]');
+
+                        if (!nameSelect?.value || !costInput?.value) return null;
+
+                        return {
+                            name: nameSelect.value,
+                            cost: parseInt(costInput.value),
+                            unit: unitSelect?.value || 'tháng',
+                            description: descInput?.value || ''
+                        };
+                    })
+                    .filter(util => util !== null);
+
+                // Trong hàm submitForm, cập nhật cách xử lý tiền cọc
+                const depositType = form.querySelector('input[name="depositType"]:checked')?.value;
+                let deposit = {
+                    amount: 0,
+                    months: 0
+                };
+
+                if (depositType === 'fixed') {
+                    const amount = parseInt(document.getElementById('depositAmount').value);
+                    if (amount > 0) {
+                        deposit = {
+                            amount: amount,
+                            months: 0
+                        };
+                    }
+                } else if (depositType === 'months') {
+                    const months = parseInt(document.getElementById('depositMonths').value);
+                    const monthlyRent = parseInt(document.getElementById('monthlyRent').value);
+                    if (months > 0 && monthlyRent > 0) {
+                        deposit = {
+                            amount: monthlyRent * months,
+                            months: months
+                        };
+                    }
+                }
+
+                // Tạo object dữ liệu
+                const propertyData = {
+                    name: requiredFields.name.trim(),
+                    address: requiredFields.address.trim(),
+                    district: requiredFields.district.trim(),
+                    ward: requiredFields.ward.trim(),
+                    description: requiredFields.description.trim(),
+                    contactPhone: requiredFields.contactPhone.trim(),
+                    latitude: selectedLocation.lat,
+                    longitude: selectedLocation.lng,
+                    location: {
+                        type: "Point",
+                        coordinates: [selectedLocation.lng, selectedLocation.lat]
+                    },
+                    closeTime: formData.get('closeTime') || '',
+                    images: imageUrls,
+                    facilities: {
+                        numBedrooms: parseInt(requiredFields.numBedrooms),
+                        bathroom: bathroomFacilities,
+                        utilityCosts: utilities,
+                        inventory: Array.from(form.querySelectorAll('input[name="inventory"]:checked') || [])
+                            .map(cb => cb?.value)
+                            .filter(Boolean),
+                        majorAppliances: Array.from(form.querySelectorAll('input[name="majorAppliances"]:checked') || [])
+                            .map(cb => cb?.value)
+                            .filter(Boolean),
+                        airConditioning: form.querySelector('input[name="airConditioning"]:checked')?.value || false
+                    },
+                    acceptableVehicles: Array.from(form.querySelectorAll('input[name="acceptableVehicles"]:checked') || [])
+                        .map(cb => cb?.value)
+                        .filter(Boolean),
+                    deposit: deposit,
+                    monthlyRent: parseInt(document.getElementById('monthlyRent').value) || 0,
+                    minStayMonths: parseInt(document.getElementById('minStayMonths').value) || 0,
+                    rating: parseInt(requiredFields.rating)
+                };
+
+                // Xóa trường utilities trùng lặp
+                delete propertyData.utilities;
+
+                console.log('Property data being sent:', propertyData);
+
+                // Kiểm tra token trước khi gửi request
+                const token = Auth.getToken();
+                if (!token) {
+                    throw new Error('Bạn cần đăng nhập lại để thực hiện chức năng này');
+                }
+
+                // Gửi request tạo tin đăng
+                const createResponse = await fetch('/api/properties', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(propertyData)
+                });
+
+                if (!createResponse.ok) {
+                    const errorData = await createResponse.json();
+                    throw new Error(errorData.message || 'Lỗi khi gửi dữ liệu lên server');
+                }
+
+                const result = await createResponse.json();
+                console.log('Server response:', result);
+
+                if (result.success) {
+                    alert('Đăng tin thành công! Bài đăng của bạn đang chờ phê duyệt.');
+                    window.location.href = '/';
+                } else {
+                    throw new Error(result.message || 'Có lỗi xảy ra khi đăng tin');
+                }
+            } catch (error) {
+                console.error('Post error:', error);
+                alert(error.message || 'Có lỗi xảy ra khi đăng tin');
+            }
+        }
+
+        // Xử lý hiển thị form đặt cọc
+        document.querySelectorAll('input[name="depositType"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.getElementById('fixedDepositAmount').style.display = 'none';
+                document.getElementById('monthsDepositAmount').style.display = 'none';
+                
+                if (e.target.value === 'fixed') {
+                    document.getElementById('fixedDepositAmount').style.display = 'block';
+                } else if (e.target.value === 'months') {
+                    document.getElementById('monthsDepositAmount').style.display = 'block';
+                }
+            });
+        });
+
+        // Xử lý thêm/xóa chi phí dịch vụ
+        document.getElementById('addUtility').addEventListener('click', () => {
+            const template = document.querySelector('.utility-cost-item').cloneNode(true);
+            template.querySelectorAll('input, select').forEach(input => input.value = '');
+            document.getElementById('utilityCosts').appendChild(template);
+        });
+
+        document.getElementById('utilityCosts').addEventListener('click', (e) => {
+            if (e.target.closest('.remove-utility')) {
+                const items = document.querySelectorAll('.utility-cost-item');
+                if (items.length > 1) {
+                    e.target.closest('.utility-cost-item').remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+>>>>>>> Stashed changes

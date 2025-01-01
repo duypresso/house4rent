@@ -17,7 +17,12 @@ const propertySchema = new mongoose.Schema({
   latitude: { type: Number, required: true },
   longitude: { type: Number, required: true },
   closeTime: String,
-  rating: { type: Number, default: 0 },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5,
+    required: true
+  },
   
   // Thông tin có thể thay đổi
   facilities: {
@@ -26,8 +31,8 @@ const propertySchema = new mongoose.Schema({
       name: String,
       cost: Number
     }],
-    hasAirCon: Boolean,
-    hasMajorAppliances: Boolean,
+    majorAppliances: [String],
+    airConditioning: Boolean,
     numBedrooms: Number,
     bathroom: {
       hasShower: Boolean,
@@ -83,4 +88,4 @@ const propertySchema = new mongoose.Schema({
 // Thêm index cho tìm kiếm địa lý
 propertySchema.index({ location: '2dsphere' });
 
-module.exports = mongoose.model('Property', propertySchema); 
+module.exports = mongoose.model('Property', propertySchema);

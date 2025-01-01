@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <!DOCTYPE html>
 <html lang="vi">
   <head>
@@ -788,3 +789,824 @@
     </script>
   </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi tiết phòng trọ - Nhà Sinh Viên</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <style>
+      .property-images .thumbnail {
+        cursor: pointer;
+        height: 100px;
+        object-fit: cover;
+      }
+      .main-image {
+        height: 400px;
+        object-fit: cover;
+      }
+      .amenity-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+      }
+      .contact-card {
+        position: sticky;
+        top: 20px;
+      }
+      #map {
+        height: 400px;
+        width: 100%;
+        border-radius: 8px;
+      }
+      .nearby-places {
+        margin-top: 20px;
+      }
+      .nearby-places .place-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+      }
+      .amenity-item {
+        padding: 8px 12px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .amenity-item i {
+        width: 20px;
+        color: #0d6efd;
+      }
+      .utility-cost-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .utility-cost-item:last-child {
+        border-bottom: none;
+      }
+      .utility-icon {
+        width: 24px;
+        text-align: center;
+        margin-right: 8px;
+      }
+      .cost-amount {
+        font-weight: bold;
+        color: #0d6efd;
+      }
+      .table > :not(caption) > * > * {
+        padding: 1rem;
+        vertical-align: middle;
+      }
+      .table > thead {
+        background-color: #f8f9fa;
+      }
+      .badge {
+        cursor: help;
+      }
+      .text-primary {
+        color: #0d6efd !important;
+      }
+      .utility-icon {
+        width: 24px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/">NhàSinhViên</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/search.html">Tìm phòng</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/post.html">Đăng tin</a>
+            </li>
+          </ul>
+          <div class="d-flex" id="authButtons">
+            <!-- Auth buttons will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container py-4">
+      <div class="row">
+        <!-- Main content -->
+        <div class="col-lg-8">
+          <!-- Property images -->
+          <div class="property-images mb-4">
+            <div class="main-image-container mb-3">
+              <a href="#" data-fancybox="gallery" id="mainImage">
+                <img
+                  src="https://via.placeholder.com/800x400"
+                  class="img-fluid rounded main-image w-100"
+                  alt="Main image"
+                />
+              </a>
+            </div>
+            <div class="row thumbnails" id="thumbnailContainer">
+              <!-- Thumbnails will be loaded here -->
+            </div>
+          </div>
+
+          <!-- Property info -->
+          <div class="property-info mb-4">
+            <h1 class="mb-3" id="propertyName">Loading...</h1>
+            <p class="text-muted mb-4" id="propertyAddress">
+              <i class="fas fa-map-marker-alt"></i> Loading...
+            </p>
+
+            <!-- Basic info -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h5>Thông tin chi phí</h5>
+                <ul class="list-unstyled">
+                  <li class="mb-2" id="depositInfo">
+                    <i class="fas fa-money-bill"></i> Loading...
+                  </li>
+                  <li class="mb-2" id="monthlyRent">
+                    <i class="fas fa-file-invoice-dollar"></i> Loading...
+                  </li>
+                  <li class="mb-2" id="minStay">
+                    <i class="fas fa-calendar-alt"></i> Loading...
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h5>Thông tin cơ bản</h5>
+                <ul class="list-unstyled">
+                  <li class="mb-2" id="numBedrooms">
+                    <i class="fas fa-bed"></i> Loading...
+                  </li>
+                  <li class="mb-2" id="bathroom">
+                    <i class="fas fa-bath"></i> Loading...
+                  </li>
+                  <li class="mb-2" id="closeTime">
+                    <i class="fas fa-clock"></i> Loading...
+                  </li>
+                  <li class="mb-2" id="propertyRating">
+                    <i class="fas fa-star"></i> Loading...
+                  </li>
+                  <li class="mb-2" id="latitude">
+                    <i class="fas fa-map-marker-alt"></i> Latitude: Loading...
+                  </li>
+                  <li class="mb-2" id="longitude">
+                    <i class="fas fa-map-marker-alt"></i> Longitude: Loading...
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h5>Được phép</h5>
+                <div id="vehicles">
+                  <!-- Vehicles will be loaded here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+              <h5>Mô tả</h5>
+              <p id="propertyDescription">Loading...</p>
+            </div>
+
+            <!-- Amenities -->
+            <div class="mb-4">
+              <h5>Tiện nghi</h5>
+              <div class="row" id="amenities">
+                <!-- Amenities will be loaded here -->
+              </div>
+            </div>
+
+            <!-- Bảng giá chi tiết -->
+            <div class="mb-4">
+              <h5>Bảng giá chi tiết</h5>
+              <div class="card">
+                <div class="card-body">
+                  <!-- Chi phí cơ bản -->
+                  <div class="table-responsive mb-4">
+                    <table class="table table-hover">
+                      <thead class="table-light">
+                        <tr>
+                          <th colspan="2">Chi phí cơ bản</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Tiền thuê hàng tháng</td>
+                          <td class="text-end" id="monthlyRentCell">
+                            Loading...
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Tiền đặt cọc</td>
+                          <td class="text-end" id="depositCell">Loading...</td>
+                        </tr>
+                        <tr>
+                          <td>Thời gian thuê tối thiểu</td>
+                          <td class="text-end" id="minStayCell">Loading...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Chi phí dịch vụ -->
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Chi phí dịch vụ</th>
+                          <th class="text-end" style="width: 200px">Đơn giá</th>
+                        </tr>
+                      </thead>
+                      <tbody id="utilityCosts">
+                        <!-- Chi phí dịch vụ sẽ được load ở đây -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Map -->
+            <div class="mb-4">
+              <h5>Vị trí</h5>
+              <div id="map" style="height: 400px" class="rounded"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+          <div class="card contact-card">
+            <div class="card-body">
+              <h5 class="card-title">Thông tin liên hệ</h5>
+              <div class="mb-3">
+                <p class="mb-1">
+                  <strong>Chủ trọ:</strong>
+                  <span id="ownerName">Loading...</span>
+                </p>
+                <p class="mb-1">
+                  <strong>Số điện thoại:</strong>
+                  <span id="ownerPhone">Loading...</span>
+                </p>
+                <p class="mb-1">
+                  <strong>Email:</strong>
+                  <span id="ownerEmail">Loading...</span>
+                </p>
+              </div>
+              <a href="#" class="btn btn-primary w-100 mb-2" id="callButton">
+                <i class="fas fa-phone"></i> Gọi điện
+              </a>
+              <button class="btn btn-outline-primary w-100" id="emailButton">
+                <i class="fas fa-envelope"></i> Gửi email
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>Về chúng tôi</h5>
+            <p>
+              Website hỗ trợ sinh viên tìm kiếm phòng trọ phù hợp với nhu cầu và
+              ngân sách.
+            </p>
+          </div>
+          <div class="col-md-4">
+            <h5>Liên hệ</h5>
+            <p>Email: contact@nhasinhvien.vn</p>
+            <p>Hotline: 0123.456.789</p>
+          </div>
+          <div class="col-md-4">
+            <h5>Theo dõi chúng tôi</h5>
+            <div class="social-links">
+              <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+              <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      // Get property ID from URL
+      const propertyId = new URLSearchParams(window.location.search).get("id");
+      let map;
+      let marker;
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        updateAuthButtons();
+        if (propertyId) {
+          await loadPropertyDetail();
+        } else {
+          window.location.href = "/";
+        }
+      });
+
+      async function loadPropertyDetail() {
+        try {
+          const response = await fetch(`/api/properties/${propertyId}`);
+          const data = await response.json();
+
+          // Log dữ liệu nhận được từ server
+          console.log("Property data received:", data);
+
+          if (data.success) {
+            const property = data.data;
+            updatePropertyDetails(property);
+            initializeMap(property);
+            setupContactButtons(property.owner);
+            initializeFancybox(property.images);
+          } else {
+            alert("Không tìm thấy thông tin bài đăng");
+            window.location.href = "/";
+          }
+        } catch (error) {
+          console.error("Load property detail error:", error);
+          alert("Có lỗi xảy ra khi tải thông tin bài đăng");
+        }
+      }
+
+      function updatePropertyDetails(property) {
+        // Update basic info
+        document.getElementById("propertyName").textContent = property.name;
+        document.getElementById("propertyAddress").innerHTML = `
+                <i class="fas fa-map-marker-alt"></i> ${property.address}, Phường ${property.ward}, ${property.district}
+            `;
+        document.getElementById("propertyDescription").textContent =
+          property.description;
+        document.getElementById("numBedrooms").innerHTML = `
+                <i class="fas fa-bed"></i> ${property.facilities.numBedrooms} phòng ngủ
+            `;
+        document.getElementById("bathroom").innerHTML = `
+                <i class="fas fa-bath"></i> Nhà vệ sinh ${
+                  property.facilities.bathroom.hasPrivateToilet
+                    ? "riêng"
+                    : "chung"
+                }
+            `;
+        document.getElementById("closeTime").innerHTML = `
+                <i class="fas fa-clock"></i> Giờ đóng cửa: ${
+                  property.closeTime || "Không giới hạn"
+                }
+            `;
+        document.getElementById("propertyRating").innerHTML = `
+                <i class="fas fa-star"></i> Đánh giá: ${property.rating} sao
+            `;
+        document.getElementById("latitude").innerHTML = `
+                <i class="fas fa-map-marker-alt"></i> Latitude: ${property.latitude}
+            `;
+        document.getElementById("longitude").innerHTML = `
+                <i class="fas fa-map-marker-alt"></i> Longitude: ${property.longitude}
+            `;
+
+        // Update images
+        const mainImage = document.getElementById("mainImage");
+        mainImage.href = property.images[0];
+        mainImage.querySelector("img").src = property.images[0];
+
+        const thumbnailContainer =
+          document.getElementById("thumbnailContainer");
+        thumbnailContainer.innerHTML = property.images
+          .map(
+            (image, index) => `
+                <div class="col-3 mb-3">
+                    <a href="${image}" data-fancybox="gallery">
+                        <img src="${image}" class="img-fluid rounded thumbnail" alt="Thumbnail ${
+              index + 1
+            }">
+                    </a>
+                </div>
+            `
+          )
+          .join("");
+
+        // Update vehicles
+        const vehiclesContainer = document.getElementById("vehicles");
+        vehiclesContainer.innerHTML = property.acceptableVehicles
+          .map((vehicle) => {
+            // Chuyển đổi định dạng hiển thị
+            const displayName =
+              {
+                xe_may: "Xe máy",
+                xe_dap: "Thú cưng",
+                thu_cung: "Thú cưng",
+                o_to: "Ô tô",
+              }[vehicle] || vehicle;
+
+            return `<span class="badge bg-secondary me-2 mb-2">${displayName}</span>`;
+          })
+          .join("");
+
+        // Update amenities
+        const amenitiesContainer = document.getElementById("amenities");
+        const amenities = [];
+
+        // Thêm tiện ích phòng tắm
+        if (property.facilities.bathroom) {
+          if (property.facilities.bathroom.hasPrivateToilet) {
+            amenities.push('<i class="fas fa-toilet"></i> Toilet riêng');
+          }
+          if (property.facilities.bathroom.hasShower) {
+            amenities.push('<i class="fas fa-shower"></i> Vòi sen');
+          }
+          if (property.facilities.bathroom.hasWaterHeater) {
+            amenities.push('<i class="fas fa-hot-tub"></i> Nóng lạnh');
+          }
+        }
+
+        // Thêm các tiện ích cơ bản từ inventory
+        const inventoryIcons = {
+          giuong: '<i class="fas fa-bed"></i> Giường',
+          tu: '<i class="fas fa-door-closed"></i> Tủ',
+          dieu_hoa: '<i class="fas fa-snowflake"></i> Điều hòa',
+          nong_lanh: '<i class="fas fa-temperature-high"></i> Nóng lạnh',
+          tu_lanh: '<i class="fas fa-box"></i> Tủ lạnh',
+          may_giat: '<i class="fas fa-tshirt"></i> Máy giặt',
+          ban_ghe: '<i class="fas fa-chair"></i> Bàn ghế',
+          wifi: '<i class="fas fa-wifi"></i> Wifi',
+          camera: '<i class="fas fa-video"></i> Camera an ninh',
+          bao_ve: '<i class="fas fa-user-shield"></i> Bảo vệ',
+          cho_de_xe: '<i class="fas fa-parking"></i> Chỗ để xe',
+          san_phoi: '<i class="fas fa-tshirt"></i> Sân phơi',
+          nha_bep: '<i class="fas fa-utensils"></i> Nhà bếp',
+        };
+
+        if (
+          property.facilities.inventory &&
+          property.facilities.inventory.length > 0
+        ) {
+          property.facilities.inventory.forEach((item) => {
+            if (inventoryIcons[item]) {
+              amenities.push(inventoryIcons[item]);
+            } else {
+              amenities.push(`<i class="fas fa-check"></i> ${item}`);
+            }
+          });
+        }
+
+        // Hiển thị danh sách tiện ích
+        amenitiesContainer.innerHTML = amenities
+          .map(
+            (amenity) => `
+                <div class="col-md-4 mb-3">
+                    <div class="amenity-item">
+                        ${amenity}
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+
+        // Cập nhật thông tin chi phí cơ bản ở phần thông tin chung
+        document.getElementById("depositInfo").innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-money-bill"></i> Tiền cọc:</span>
+                    <strong class="text-primary">
+                        ${
+                          property.deposit?.amount === 0
+                            ? "Không yêu cầu đặt cọc"
+                            : `${formatMoney(property.deposit?.amount)} đ`
+                        }
+                        ${
+                          property.deposit?.months > 0
+                            ? `<small class="text-muted">(${property.deposit.months} tháng)</small>`
+                            : ""
+                        }
+                    </strong>
+                </div>
+            `;
+
+        document.getElementById("monthlyRent").innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-file-invoice-dollar"></i> Tiền thuê:</span>
+                    <strong class="text-primary">${formatMoney(
+                      property.monthlyRent
+                    )} đ/tháng</strong>
+                </div>
+            `;
+
+        document.getElementById("minStay").innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-calendar-alt"></i> Thời gian thuê tối thiểu:</span>
+                    <strong>${property.minStayMonths || 0} tháng</strong>
+                </div>
+            `;
+
+        // Cập nhật bảng chi phí chi tiết
+        document.getElementById("monthlyRentCell").innerHTML = `
+                <strong class="text-primary">${formatMoney(
+                  property.monthlyRent
+                )} đ</strong>
+                <small class="text-muted">/tháng</small>
+            `;
+
+        document.getElementById("depositCell").innerHTML = `
+                <strong class="text-primary">
+                    ${
+                      property.deposit?.amount === 0
+                        ? "Không yêu cầu đặt cọc"
+                        : `${formatMoney(property.deposit?.amount)} đ`
+                    }
+                </strong>
+                ${
+                  property.deposit?.months > 0
+                    ? `<small class="text-muted">(${property.deposit.months} tháng)</small>`
+                    : ""
+                }
+            `;
+
+        document.getElementById("minStayCell").innerHTML = `
+                <strong>${property.minStayMonths || 0}</strong>
+                <small class="text-muted">tháng</small>
+            `;
+
+        // Cập nhật chi phí dịch vụ
+        const utilityCostsContainer = document.getElementById("utilityCosts");
+        const utilities =
+          property.utilities || property.facilities?.utilityCosts || [];
+
+        if (utilities.length > 0) {
+          utilityCostsContainer.innerHTML = utilities
+            .map(
+              (cost) => `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                ${getUtilityIcon(cost.name)} 
+                                <span class="ms-2">${cost.name}</span>
+                                ${
+                                  cost.description
+                                    ? `<span class="badge bg-light text-dark ms-2" 
+                                           data-bs-toggle="tooltip" 
+                                           title="${cost.description}">
+                                        <i class="fas fa-info-circle"></i>
+                                    </span>`
+                                    : ""
+                                }
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <strong class="text-primary">${formatMoney(
+                              cost.cost
+                            )} đ</strong>
+                            <small class="text-muted">/${
+                              cost.unit || "tháng"
+                            }</small>
+                        </td>
+                    </tr>
+                `
+            )
+            .join("");
+
+          // Khởi tạo tooltips
+          const tooltips = document.querySelectorAll(
+            '[data-bs-toggle="tooltip"]'
+          );
+          tooltips.forEach((tooltip) => new bootstrap.Tooltip(tooltip));
+        } else {
+          utilityCostsContainer.innerHTML = `
+                    <tr>
+                        <td colspan="2" class="text-center text-muted py-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Chưa có thông tin chi phí dịch vụ
+                        </td>
+                    </tr>
+                `;
+        }
+
+        // Update owner info
+        document.getElementById("ownerName").textContent = property.owner.name;
+        document.getElementById("ownerPhone").textContent =
+          property.owner.phone;
+        document.getElementById("ownerEmail").textContent =
+          property.owner.email;
+      }
+
+      function initializeMap(property) {
+        // Lấy tọa độ từ property
+        const [longitude, latitude] = property.location.coordinates;
+
+        // Khởi tạo bản đồ
+        map = L.map("map").setView([latitude, longitude], 15);
+
+        // Thêm layer OpenStreetMap
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap contributors",
+        }).addTo(map);
+
+        // Tạo marker cho vị trí phòng trọ
+        marker = L.marker([latitude, longitude], { draggable: true })
+          .addTo(map)
+          .bindPopup(
+            `
+                    <div style="max-width: 200px;">
+                        <h6 style="margin: 0 0 5px 0;">${property.name}</h6>
+                        <p style="margin: 0;">${property.address}</p>
+                    </div>
+                `
+          )
+          .openPopup();
+
+        // Cập nhật latitude và longitude khi marker được kéo
+        marker.on('dragend', function(e) {
+          const position = marker.getLatLng();
+          document.getElementById('latitude').innerHTML = `
+            <i class="fas fa-map-marker-alt"></i> Latitude: ${position.lat}
+          `;
+          document.getElementById('longitude').innerHTML = `
+            <i class="fas fa-map-marker-alt"></i> Longitude: ${position.lng}
+          `;
+        });
+
+        // Thêm các địa điểm xung quanh
+        addNearbyPlaces(map, latitude, longitude);
+      }
+
+      function addNearbyPlaces(map, lat, lng) {
+        // Sử dụng Overpass API để lấy các địa điểm xung quanh
+        const radius = 500; // 500m
+        const types = [
+          { key: "amenity", value: "atm", icon: "🏧" },
+          { key: "amenity", value: "restaurant", icon: "🍽️" },
+          { key: "shop", value: "convenience", icon: "🏪" },
+          { key: "highway", value: "bus_stop", icon: "🚌" },
+        ];
+
+        types.forEach((type) => {
+          const query = `
+                    [out:json][timeout:25];
+                    (
+                        node["${type.key}"="${type.value}"](around:${radius},${lat},${lng});
+                    );
+                    out body;
+                `;
+
+          fetch(`https://overpass-api.de/api/interpreter`, {
+            method: "POST",
+            body: query,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              data.elements.forEach((element) => {
+                L.marker([element.lat, element.lon], {
+                  icon: L.divIcon({
+                    html: type.icon,
+                    className: "place-icon",
+                    iconSize: [20, 20],
+                  }),
+                })
+                  .addTo(map)
+                  .bindPopup(element.tags.name || type.value);
+              });
+            })
+            .catch((error) =>
+              console.error("Error fetching nearby places:", error)
+            );
+        });
+
+        // Thêm chú thích cho các loại địa điểm
+        const legend = L.control({ position: "bottomright" });
+        legend.onAdd = function () {
+          const div = L.DomUtil.create("div", "nearby-places info legend");
+          div.innerHTML = types
+            .map(
+              (type) =>
+                `<div><span class="place-icon">${type.icon}</span> ${type.value}</div>`
+            )
+            .join("");
+          return div;
+        };
+        legend.addTo(map);
+      }
+
+      function setupContactButtons(owner) {
+        document.getElementById("callButton").href = `tel:${owner.phone}`;
+        document.getElementById("emailButton").addEventListener("click", () => {
+          window.location.href = `mailto:${
+            owner.email
+          }?subject=Hỏi về phòng trọ: ${
+            document.getElementById("propertyName").textContent
+          }`;
+        });
+      }
+
+      function initializeFancybox(images) {
+        Fancybox.bind('[data-fancybox="gallery"]', {
+          loop: true,
+        });
+      }
+
+      function updateAuthButtons() {
+        const user = Auth.getUser();
+        const authButtons = document.getElementById("authButtons");
+
+        if (user) {
+          authButtons.innerHTML = `
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> ${user.name}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            ${
+                              user.role === "admin"
+                                ? '<li><a class="dropdown-item" href="admin.html">Quản lý</a></li>'
+                                : ""
+                            }
+                            ${
+                              user.role === "owner"
+                                ? '<li><a class="dropdown-item" href="my-properties.html">Tin đã đăng</a></li>'
+                                : ""
+                            }
+                           
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="Auth.logout()">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                `;
+        } else {
+          authButtons.innerHTML = `
+                    <a href="login.html" class="btn btn-outline-primary me-2">Đăng nhập</a>
+                    <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                `;
+        }
+      }
+
+      // Hàm format tiền tệ
+      function formatMoney(amount) {
+        if (amount === undefined || amount === null) return "Thương lượng";
+        // Số 0 vẫn hiển thị là 0đ thay vì "Thương lượng"
+        return amount.toLocaleString("vi-VN");
+      }
+
+      // Cập nhật hàm getUtilityIcon để thêm các loại chi phí mới
+      function getUtilityIcon(utilityName) {
+        const icons = {
+          Điện: '<i class="fas fa-bolt text-warning"></i>',
+          Nước: '<i class="fas fa-tint text-primary"></i>',
+          Internet: '<i class="fas fa-wifi text-info"></i>',
+          Rác: '<i class="fas fa-trash text-secondary"></i>',
+          "Gửi xe": '<i class="fas fa-motorcycle text-success"></i>',
+          "Dịch vụ": '<i class="fas fa-concierge-bell text-primary"></i>',
+          "Vệ sinh": '<i class="fas fa-broom text-info"></i>',
+          "Phí quản lý": '<i class="fas fa-tasks text-info"></i>',
+          "Phí chung cư": '<i class="fas fa-building text-secondary"></i>',
+          "Điện sinh hoạt": '<i class="fas fa-plug text-warning"></i>',
+          "Nước sinh hoạt":
+            '<i class="fas fa-hand-holding-water text-primary"></i>',
+          "Bảo trì": '<i class="fas fa-tools text-secondary"></i>',
+        };
+        return (
+          icons[utilityName] || '<i class="fas fa-file-invoice-dollar"></i>'
+        );
+      }
+    </script>
+  </body>
+</html>
+>>>>>>> Stashed changes
