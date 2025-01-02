@@ -1,4 +1,5 @@
 const Property = require('../models/Property');
+const Comment = require('../models/Comment');
 
 // Hàm lấy tọa độ trung tâm của quận
 function getDistrictCoordinates(district) {
@@ -346,4 +347,50 @@ exports.getProperty = async (req, res) => {
             message: error.message
         });
     }
-}; 
+};
+
+exports.getComments = async (req, res) => {
+    try {
+        const comments = await Comment.find({ propertyId: req.params.id }).sort({ createdAt: -1 });
+        res.json({ success: true, comments });
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        res.status(500).json({ success: false, message: 'Error fetching comments' });
+    }
+};
+
+exports.addComment = async (req, res) => {
+    try {
+        const { text } = req.body;
+        const newComment = new Comment({
+            propertyId: req.params.id,
+            user: req.user.name, // Ensure req.user is populated by the protect middleware
+            text,
+        });
+        await newComment.save();
+        res.json({ success: true, comment: newComment });
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        res.status(500).json({ success: false, message: 'Error adding comment' });
+    }
+};
+
+exports.addReply = async (req, res) => {
+    try {
+        const { text } = req.body;
+        const comment = await Comment.findById(req.params.commentId);
+        if (!comment) {
+            return res.status(404).json({ success: false, message: 'Comment not found' });
+        }
+        const reply = {
+            user: req.user.name, // Ensure req.user is populated by the protect middleware
+            text,
+        };
+        comment.replies.push(reply);
+        await comment.save();
+        res.json({ success: true, reply });
+    } catch (error) {
+        console.error('Error adding reply:', error);
+        res.status(500).json({ success: false, message: 'Error adding reply' });
+    }
+};

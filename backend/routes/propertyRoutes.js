@@ -4,6 +4,7 @@ const propertyController = require('../controllers/propertyController');
 const { protect, restrictTo } = require('../middleware/auth');
 const Property = require('../models/Property');
 const Rating = require('../models/Rating');
+const { getPropertyById, addComment, getComments, addReply } = require('../controllers/propertyController');
 
 // Public routes
 router.get('/approved', propertyController.getApprovedProperties);
@@ -162,6 +163,15 @@ router.post('/properties', protect, restrictTo('owner', 'admin'), async (req, re
         res.status(400).json({ success: false, message: error.message });
     }
 });
+
+// Route to get comments for a property
+router.get('/:id/comments', getComments);
+
+// Route to add a comment to a property
+router.post('/:id/comments', protect, addComment);
+
+// Route to add a reply to a comment
+router.post('/:id/comments/:commentId/replies', protect, addReply);
 
 // Các routes khác
 router.delete('/:id', protect, restrictTo('owner', 'admin'), propertyController.deleteProperty);
