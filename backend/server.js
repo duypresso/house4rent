@@ -11,6 +11,7 @@ const authRoute = require('./routes/authRoutes');
 const propertyRoute = require('./routes/propertyRoutes');
 const commentRoute = require('./routes/commentRoutes');
 const adminRoute = require('./routes/adminRoutes');
+const emailRoutes = require('./routes/email');
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/properties', propertyRoute);
 app.use('/api/comments', commentRoute);
 app.use('/api/admin', adminRoute);
+app.use('/api', emailRoutes);
 
 // Frontend Routes - Serve index.html for all routes except /api
 app.get('*', (req, res, next) => {
@@ -94,4 +96,4 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-}); 
+});

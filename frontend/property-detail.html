@@ -830,6 +830,24 @@
         );
       }
 
+      async function sendEmail(to, subject, text) {
+        try {
+          const response = await fetch(`/api/send-email`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ to, subject, text }),
+          });
+          const data = await response.json();
+          if (!data.success) {
+            console.error('Failed to send email:', data.message);
+          }
+        } catch (error) {
+          console.error('Send email error:', error);
+        }
+      }
+
       document.getElementById('submitComment').addEventListener('click', async () => {
         const commentText = document.getElementById('commentText').value;
         const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
@@ -848,6 +866,7 @@
             if (data.success) {
               loadComments();
               document.getElementById('commentText').value = '';
+              sendEmail(document.getElementById('ownerEmail').textContent, 'New Comment on Your Property', `You have a new comment on your property: ${data.comment.text}`);
             } else {
               alert('Không thể gửi bình luận');
             }
@@ -859,6 +878,28 @@
           alert('Bạn cần đăng nhập để gửi bình luận');
         }
       });
+
+      async function sendEmailToOwner(comment) {
+        try {
+          const response = await fetch(`/api/send-email`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              to: document.getElementById('ownerEmail').textContent,
+              subject: 'New Comment on Your Property',
+              text: `You have a new comment on your property: ${comment.text}`
+            }),
+          });
+          const data = await response.json();
+          if (!data.success) {
+            console.error('Failed to send email:', data.message);
+          }
+        } catch (error) {
+          console.error('Send email error:', error);
+        }
+      }
 
       async function loadComments() {
         try {
@@ -914,6 +955,10 @@
                     const data = await response.json();
                     if (data.success) {
                       loadComments();
+                      sendEmail(document.getElementById('ownerEmail').textContent, 'New Reply on Your Property', `You have a new reply on your property: ${data.reply.text}`);
+                      if (data.reply.userEmail) {
+                        sendEmail(data.reply.userEmail, 'New Reply to Your Comment', `You have a new reply to your comment: ${data.reply.text}`);
+                      }
                     } else {
                       alert('Không thể gửi phản hồi');
                     }
